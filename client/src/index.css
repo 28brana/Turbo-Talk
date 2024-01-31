@@ -7,7 +7,7 @@ html{
 }
 .auth-input{
     background:#F4F4F4;
-    @apply rounded-lg px-4 py-2 text-sm;
+    @apply rounded-lg px-4 py-2 text-sm w-full;
 }
 
 
@@ -17,8 +17,6 @@ html{
     background:url('./assets/auth-bg.png') center;
     @apply absolute top-0 left-0 w-full h-full bg-no-repeat -z-10 ;
     background-size:70%;
-    
-    
 }
 
 
