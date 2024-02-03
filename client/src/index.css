@@ -10,8 +10,6 @@ html{
     @apply rounded-lg px-4 py-2 text-sm w-full;
 }
 
-
-
 .auth-main::before{
     content:"";
     background:url('./assets/auth-bg.png') center;
@@ -22,4 +20,16 @@ html{
 
 .auth-btn{
     @apply bg-secondary px-4 py-2 rounded-3xl text-white font-bold w-full;
+}
+
+.icon-btn{
+    @apply flex items-center justify-center border rounded-full p-1 cursor-pointer;
+}
+
+.icon-btn:hover{
+    @apply bg-black;
+}
+
+.search{
+    @apply border rounded-md w-full pl-10 py-2 ;
 }

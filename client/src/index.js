@@ -16,6 +16,7 @@ import Register from './pages/Auth/Register';
 import { store } from './redux/store';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Chat from './pages/chat';
 const router = createBrowserRouter([
   {
     path: "/auth",
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       }
     ]
   },
+  {
+    path:"/chat",
+    element:<Chat/>
+  }
 ]);
 
 const queryClient = new QueryClient()
