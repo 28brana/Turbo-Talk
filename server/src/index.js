@@ -11,8 +11,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morganChalk);
-app.use(handleErrors);
 app.use("/", routes);
+app.use(handleErrors);
 
 const startServer = () => {
   app
