@@ -1,0 +1,1 @@
+export * as userValidate from './user.validate.js';
