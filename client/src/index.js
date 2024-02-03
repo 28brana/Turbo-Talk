@@ -12,7 +12,7 @@ import {
 } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import Login from './pages/Auth/Login';
-import Signin from './pages/Auth/Signin';
+import Register from './pages/Auth/Register';
 import { store } from './redux/store';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,7 +26,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'register',
-        element: <Signin />
+        element: <Register />
       }
     ]
   },

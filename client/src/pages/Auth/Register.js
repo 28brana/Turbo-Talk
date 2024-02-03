@@ -1,11 +1,20 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeSlash } from "@phosphor-icons/react";
+import { useDispatch } from 'react-redux'
+import {
+    useMutation
+} from '@tanstack/react-query';
+import { authService } from "../../service";
+import { toast } from 'react-toastify';
+import { login } from "../../redux/slice/auth.slice";
 
-const Signin = () => {
+const Register = () => {
+    const dispatch = useDispatch()
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         username: '',
+        email: '',
         password: ''
     });
 
@@ -19,10 +28,18 @@ const Signin = () => {
             [e.target.name]: e.target.value
         })
     }
-    
+    const { mutate } = useMutation({
+        mutationFn: authService.register,
+        onSuccess: (data) => {
+            dispatch(login(data))
+        },
+        onError: (data) => {
+            toast.error(data.message);
+        }
+    })
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
+        mutate(formData);
     }
     return (
         <div className="auth-main flex h-screen items-center justify-center bg-background relative z-0">
@@ -36,6 +53,10 @@ const Signin = () => {
                         <div className="flex flex-col gap-1 mt-8">
                             <label className="text-xs font-semibold uppercase text-textPrimary">Username</label>
                             <input type="text" className="auth-input" name="username" value={formData.username} onChange={handleChange} required placeholder="Enter Username" />
+                        </div>
+                        <div className="flex flex-col gap-1 mt-4">
+                            <label className="text-xs font-semibold uppercase text-textPrimary">Email</label>
+                            <input type="email" className="auth-input" name="email" value={formData.email} onChange={handleChange} required placeholder="Enter Email" />
                         </div>
                         <div className="flex flex-col gap-1 mt-4">
                             <label className="text-xs font-semibold uppercase text-textPrimary">Password</label>
@@ -59,4 +80,4 @@ const Signin = () => {
     )
 }
 
-export default Signin;
+export default Register;
