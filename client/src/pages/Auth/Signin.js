@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeSlash } from "@phosphor-icons/react";
 
-const Login = () => {
+const Signin = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         username: '',
@@ -31,8 +31,8 @@ const Login = () => {
                 <div className="bg-white  gap-10 rounded-lg py-12 px-10 w-2/4 flex">
                     <form onSubmit={handleSubmit} className="flex-1">
 
-                        <p className="text-lg font-bold mb-1 text-textPrimary">Login </p>
-                        <p className="text-sm text-textSecondary">Start your journey here</p>
+                        <p className="text-lg font-bold mb-1 text-textPrimary">Create Your Account </p>
+                        <p className="text-sm text-textSecondary">Fill in the fields below to create your account 📝</p>
                         <div className="flex flex-col gap-1 mt-8">
                             <label className="text-xs font-semibold uppercase text-textPrimary">Username</label>
                             <input type="text" className="auth-input" name="username" value={formData.username} onChange={handleChange} required placeholder="Enter Username" />
@@ -49,9 +49,9 @@ const Login = () => {
                             </div>
                         </div>
 
-                        <button className="auth-btn mt-8">Login</button>
+                        <button className="auth-btn mt-8">Register Now</button>
                         <hr className="my-6" />
-                        <p className="text-sm text-center font-semibold text-textPrimary"> Don't have account ? <Link to={'/auth/register'}><span className="text-secondary">Sigin</span></Link> </p>
+                        <p className="text-sm text-center font-semibold text-textPrimary"> Already have an account? <Link to={'/auth/login'}><span className="text-secondary">Log in here</span></Link> </p>
                     </form>
                 </div>
             </div>
@@ -59,4 +59,4 @@ const Login = () => {
     )
 }
 
-export default Login;
+export default Signin;

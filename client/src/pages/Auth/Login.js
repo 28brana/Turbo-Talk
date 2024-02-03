@@ -1,11 +1,19 @@
+import { Eye, EyeSlash } from "@phosphor-icons/react";
+import {
+    useMutation
+} from '@tanstack/react-query';
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Eye, EyeSlash } from "@phosphor-icons/react";
+import { authService } from "../../service";
+import { useDispatch } from 'react-redux'
+import { login } from "../../redux/slice/auth.slice";
+import {  toast } from 'react-toastify';
 
 const Login = () => {
+    const dispatch = useDispatch()
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
-        username: '',
+        email: '',
         password: ''
     });
 
@@ -19,10 +27,18 @@ const Login = () => {
             [e.target.name]: e.target.value
         })
     }
-    
+    const { mutate } = useMutation({
+        mutationFn: authService.login,
+        onSuccess: (data) => {
+            dispatch(login(data))
+        },
+        onError:(data)=>{
+            toast.error(data.message);
+        }
+    })
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
+        mutate(formData)
     }
     return (
         <div className="auth-main flex h-screen items-center justify-center bg-background relative z-0">
@@ -31,11 +47,11 @@ const Login = () => {
                 <div className="bg-white  gap-10 rounded-lg py-12 px-10 w-2/4 flex">
                     <form onSubmit={handleSubmit} className="flex-1">
 
-                        <p className="text-lg font-bold mb-1 text-textPrimary">Register </p>
-                        <p className="text-sm text-textSecondary">Start your journey here</p>
+                        <p className="text-lg font-bold mb-1 text-textPrimary">Login to Your Account </p>
+                        <p className="text-sm text-textSecondary">Enter your credentials to continue 🚀</p>
                         <div className="flex flex-col gap-1 mt-8">
-                            <label className="text-xs font-semibold uppercase text-textPrimary">Username</label>
-                            <input type="text" className="auth-input" name="username" value={formData.username} onChange={handleChange} required placeholder="Enter Username" />
+                            <label className="text-xs font-semibold uppercase text-textPrimary">Email</label>
+                            <input type="email" className="auth-input" name="email" value={formData.email} onChange={handleChange} required placeholder="Enter email" />
                         </div>
                         <div className="flex flex-col gap-1 mt-4">
                             <label className="text-xs font-semibold uppercase text-textPrimary">Password</label>
@@ -49,9 +65,9 @@ const Login = () => {
                             </div>
                         </div>
 
-                        <button className="auth-btn mt-8">Register Now</button>
+                        <button className="auth-btn mt-8">Login</button>
                         <hr className="my-6" />
-                        <p className="text-sm text-center font-semibold text-textPrimary"> Already have account ? <Link to={'/auth/login'}><span className="text-secondary">Login</span></Link> </p>
+                        <p className="text-sm text-center font-semibold text-textPrimary"> Don't have an account? <Link to={'/auth/register'}><span className="text-secondary">Sign up now</span></Link> </p>
                     </form>
                 </div>
             </div>
