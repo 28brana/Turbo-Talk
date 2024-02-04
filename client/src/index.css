@@ -4,7 +4,28 @@
 
 html{
     font-family: "Poppins", sans-serif;
+    color:#151515;
 }
+/* width */
+::-webkit-scrollbar {
+    width: 6px;
+}
+  
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
 .auth-input{
     background:#F4F4F4;
     @apply rounded-lg px-4 py-2 text-sm w-full;
@@ -23,13 +44,33 @@ html{
 }
 
 .icon-btn{
-    @apply flex items-center justify-center border rounded-full p-1 cursor-pointer;
+    @apply flex items-center justify-center rounded-full p-1 cursor-pointer transition-all;
 }
 
 .icon-btn:hover{
-    @apply bg-black;
+    @apply bg-secondary text-white;
+
 }
 
 .search{
-    @apply border rounded-md w-full pl-10 py-2 ;
+    @apply border rounded-md w-full pl-10 py-2 bg-backgroundSecondary ;
+    @apply focus:border-transparent focus:outline-none;
+
+}
+
+
+
+.sidebar {
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  }
+  
+  /* Apply styles based on the sidebar state */
+.sidebar.closed {
+transform: translateX(-100%);
+opacity: 0;
+}
+
+.sidebar.open {
+transform: translateX(0);
+opacity: 1;
 }

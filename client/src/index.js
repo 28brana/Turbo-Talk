@@ -34,7 +34,11 @@ const router = createBrowserRouter([
   {
     path:"/chat",
     element:<Chat/>
-  }
+  },
+  {
+    path:"/chat/:conversationId",
+    element:<Chat/>
+  },
 ]);
 
 const queryClient = new QueryClient()
