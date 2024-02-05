@@ -8,8 +8,10 @@ import {
 import { authService } from "../../service";
 import { toast } from 'react-toastify';
 import { login } from "../../redux/slice/auth.slice";
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch()
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
@@ -32,6 +34,7 @@ const Register = () => {
         mutationFn: authService.register,
         onSuccess: (data) => {
             dispatch(login(data))
+            navigate('/chat')
         },
         onError: (data) => {
             toast.error(data.message);

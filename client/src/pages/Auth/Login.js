@@ -7,9 +7,12 @@ import { Link } from "react-router-dom";
 import { authService } from "../../service";
 import { useDispatch } from 'react-redux'
 import { login } from "../../redux/slice/auth.slice";
-import {  toast } from 'react-toastify';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+    const navigate = useNavigate();
+
     const dispatch = useDispatch()
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
@@ -31,6 +34,7 @@ const Login = () => {
         mutationFn: authService.login,
         onSuccess: (data) => {
             dispatch(login(data))
+            navigate(`/chat`);
         },
         onError:(data)=>{
             toast.error(data.message);

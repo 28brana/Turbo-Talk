@@ -2,7 +2,8 @@ import { Power, ChatDots, MagnifyingGlass } from '@phosphor-icons/react';
 import Users from './Users';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-
+import { useQuery } from '@tanstack/react-query';
+import { getUserConversation } from '../../../service/conversation.service';
 const ListItem = ({ _id, avatar, name, lastMessage, lastActive, unseenMessage, isActive }) => {
     const navigate = useNavigate();
     const handleClick = () => {
@@ -29,8 +30,10 @@ const ListItem = ({ _id, avatar, name, lastMessage, lastActive, unseenMessage, i
 
 const SideBar = () => {
     const { conversationId } = useParams();
-    const [showUserList,setShowUserList]=useState(false);
+    const [showUserList, setShowUserList] = useState(false);
 
+    const { data: list } = useQuery({queryKey:['conversationList'], queryFn:getUserConversation});
+    console.log({ list });
     const data = [
         {
             _id: "1",
@@ -50,14 +53,14 @@ const SideBar = () => {
     ]
     return (
         <div className="border relative h-full">
-            <Users open={showUserList} onClose={()=>{setShowUserList(false)}}/>
+            <Users open={showUserList} onClose={() => { setShowUserList(false) }} />
             <div>
                 <div className="flex px-3 border-b py-2 items-center justify-between">
                     <div className="rounded-full w-10 h-10 flex items-center justify-center overflow-hidden ">
                         <img className="object-contain" src={"https://picsum.photos/200/300"} alt="profile" />
                     </div>
                     <div className="flex items-center gap-4">
-                        <div className='icon-btn' onClick={()=>{setShowUserList(true)}}>
+                        <div className='icon-btn' onClick={() => { setShowUserList(true) }}>
                             <ChatDots size={24} />
                         </div>
                         <div className='icon-btn'>

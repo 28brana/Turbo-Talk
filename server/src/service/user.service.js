@@ -40,9 +40,11 @@ export const getAllUsers = async (page = 1, limit = 10, searchQuery = '') => {
         ];
     }
     const skip = (page - 1) * limit;
-    const users = await userModel
-        .find(filter, '_id email username createdAt avatar')
-        .skip(skip)
-        .limit(limit);
-    return { users, message: "Users retrieved successfully." };
+    const [users, totalUsersCount] = await Promise.all([
+        userModel.find(filter, '_id email username createdAt avatar').skip(skip).limit(limit),
+        userModel.countDocuments(filter),
+    ]);
+
+    const remainingUserCount = Math.max(0, totalUsersCount - (page * limit));
+    return { users, totalUsersCount, remainingUserCount, remessage: "Users retrieved successfully." };
 };
