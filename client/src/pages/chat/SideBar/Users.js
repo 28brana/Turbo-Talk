@@ -5,15 +5,28 @@ import { getAllUser } from '../../../service/user.service';
 import { useState } from 'react';
 import debounce from 'lodash/debounce';
 import SearchInput from '../../../component/SearchInput';
+import {
+    useMutation
+} from '@tanstack/react-query';
+import { conversationService } from '../../../service';
+import { toast } from 'react-toastify';
 
-const ListItem = ({ avatar, username, email, onClose }) => {
+const ListItem = ({ _id, avatar, username, email, onClose }) => {
     const navigate = useNavigate();
-
+    const { mutate } = useMutation({
+        mutationFn: conversationService.createConversation,
+        onSuccess: (data) => {
+            onClose();
+            navigate(`/chat/${data?.data?._id}`);
+        },
+        onError: (data) => {
+            toast.error(data.message);
+        }
+    })
     const handleClick = () => {
-        // Create new conversation
-        const conversationId = 5;
-        navigate(`/chat/${conversationId}`);
-        onClose();
+        mutate({
+            participants: [_id]
+        });
     }
     return (
         <div onClick={handleClick} className='flex items-center gap-4 px-4 py-3 border-b hover:bg-hover cursor-pointer'>

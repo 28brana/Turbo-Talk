@@ -8,6 +8,14 @@ export const getUserConversation = async () => {
         throw new Error(error?.response?.data?.message || 'Server Error');
     }
 };
+export const createConversation = async (data) => {
+    try {
+        const response = await api.post('/conversation', data);
+        return response.data;
+    } catch (error) {
+        throw new Error(error?.response?.data?.message || 'Server Error');
+    }
+};
 
 
 
