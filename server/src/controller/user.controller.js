@@ -14,6 +14,7 @@ export const loginUser = catchAsync(async (req, res) => {
 
 export const getAllUser = catchAsync(async (req, res) => {
   const { page, limit, searchQuery } = req.query;
-  const result = await userService.getAllUsers(page, limit, searchQuery);
+  const userId=req.userId;
+  const result = await userService.getAllUsers(page, limit, searchQuery,userId);
   return res.status(200).json(result);
 })

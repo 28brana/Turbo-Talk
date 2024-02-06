@@ -31,8 +31,9 @@ export const loginUser = async (email, password) => {
     return { user: newUserObject, token, message: "Login successful!" };
 };
 
-export const getAllUsers = async (page = 1, limit = 10, searchQuery = '') => {
+export const getAllUsers = async (page = 1, limit = 10, searchQuery = '', userId) => {
     const filter = {};
+    filter._id = { $ne: userId };
     if (searchQuery) {
         filter.$or = [
             { email: { $regex: searchQuery, $options: 'i' } },

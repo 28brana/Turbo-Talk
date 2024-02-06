@@ -4,7 +4,6 @@ export const getAllConversation = async (page = 1, limit = 10, searchQuery = '')
     const filter = {};
     if (searchQuery) {
         filter = { name: { $regex: searchQuery, $options: 'i' } };
-
     }
     const skip = (page - 1) * limit;
     const users = await conversationModel
@@ -17,11 +16,15 @@ export const getAllConversation = async (page = 1, limit = 10, searchQuery = '')
 
 export const createConversation = async (body) => {
     const { participants } = body;
+    const existingConversation = await conversationModel.findOne({ participants });
+    if (existingConversation) {
+        return { data: existingConversation, message: "Already Exists" }
+    }
     const result = await conversationModel.create({ participants });
-    return { result, message: "Created Successfully" }
+    return { data: result, message: "Created Successfully" }
 }
 
 export const deleteConversation = async (id) => {
     const result = await conversationModel.delete({ _id: id });
-    return { result, message: "Deleted Successfully" }
+    return { data: result, message: "Deleted Successfully" }
 }

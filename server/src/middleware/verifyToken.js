@@ -10,7 +10,7 @@ const verifyToken = async (req, res, next) => {
         }
 
         const decoded = jwt.verify(token.split('Bearer ')[1], JWT_SECRET);
-        req.userid=decoded.userid;
+        req.userId=decoded.userId;
         next();
 
     } catch (err) {

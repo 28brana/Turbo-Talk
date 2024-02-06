@@ -9,8 +9,14 @@ export const getAllConversation = catchAsync(async (req, res) => {
 });
 
 export const createConversation = catchAsync(async (req, res) => {
-
-    const result = await conversationService.createConversation(req.body);
+    const userId = req.userId;
+    if (!userId) {
+        return res.status(400).json({ message: 'User id missing' });
+    }
+    const body = {
+        participants: [userId, ...req.body.participants],
+    }
+    const result = await conversationService.createConversation(body);
     return res.status(201).json(result);
 });
 
@@ -18,5 +24,5 @@ export const deleteConversation = catchAsync(async (req, res) => {
 
     const result = await conversationService.deleteConversation(req.body.id);
     return res.status(201).json(result);
-    
+
 });
