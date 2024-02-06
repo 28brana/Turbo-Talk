@@ -11,11 +11,14 @@ import {
 import { conversationService } from '../../../service';
 import { toast } from 'react-toastify';
 
-const ListItem = ({ _id, avatar, username, email, onClose }) => {
+const ListItem = ({ _id, avatar, username, email, onClose, refetch }) => {
     const navigate = useNavigate();
     const { mutate } = useMutation({
         mutationFn: conversationService.createConversation,
         onSuccess: (data) => {
+            if(!data?.alreadyExists){
+                refetch()
+            }
             onClose();
             navigate(`/chat/${data?.data?._id}`);
         },
@@ -25,7 +28,7 @@ const ListItem = ({ _id, avatar, username, email, onClose }) => {
     })
     const handleClick = () => {
         mutate({
-            participants: [_id]
+            participants: [_id],
         });
     }
     return (
@@ -40,7 +43,8 @@ const ListItem = ({ _id, avatar, username, email, onClose }) => {
         </div>
     )
 }
-const Users = ({ open, onClose }) => {
+const Users = ({ open, onClose, refetch }) => {
+    
     const [filter, setFilter] = useState({
         page: 1,
         limit: 20,
@@ -82,7 +86,7 @@ const Users = ({ open, onClose }) => {
                 }
                 {
                     userList?.map((userDetail) => (
-                        <ListItem {...userDetail} key={userDetail._id} onClose={onClose} />
+                        <ListItem {...userDetail} key={userDetail._id} refetch={refetch} onClose={onClose} />
                     ))
                 }
                 {

@@ -1,11 +1,30 @@
-import { Power, ChatDots, MagnifyingGlass } from '@phosphor-icons/react';
+import { Power, ChatDots } from '@phosphor-icons/react';
 import Users from './Users';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getUserConversation } from '../../../service/conversation.service';
+import { debounce } from 'lodash';
+import SearchInput from '../../../component/SearchInput';
+import { useDispatch } from 'react-redux';
+import { currentConversation } from '../../../redux/slice/conversation.slice';
+import { useSelector } from 'react-redux';
+
 const ListItem = ({ _id, avatar, name, lastMessage, lastActive, unseenMessage, isActive }) => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const conversation = useSelector(state => state.conversation);
+    if (isActive && conversation.userDetail._id !== _id) {
+        dispatch(currentConversation({
+            _id,
+            avatar,
+            name,
+            lastMessage,
+            lastActive,
+            unseenMessage,
+            isActive
+        }))
+    }
     const handleClick = () => {
         navigate(`/chat/${_id}`);
     }
@@ -32,28 +51,22 @@ const SideBar = () => {
     const { conversationId } = useParams();
     const [showUserList, setShowUserList] = useState(false);
 
-    const { data: list } = useQuery({queryKey:['conversationList'], queryFn:getUserConversation});
-    console.log({ list });
-    const data = [
-        {
-            _id: "1",
-            avatar: "https://picsum.photos/200/300",
-            name: "Keerti Sharma",
-            lastMessage: "How are u ?",
-            lastActive: "8:25pm",
-            unseenMessage: 5
-        },
-        {
-            _id: "2",
-            avatar: "https://picsum.photos/200/300",
-            name: "Rahul",
-            lastMessage: "How are u ?",
-            lastActive: "8:25pm",
-        },
-    ]
+    const [filter, setFilter] = useState({
+        page: 1,
+        limit: 20,
+        searchQuery: ''
+    })
+    const { data, refetch } = useQuery({ queryKey: ['conversationList', filter], queryFn: ({ queryKey }) => getUserConversation(queryKey[1]) });
+    const debouncedSetFilter = debounce((value) => {
+        setFilter({
+            ...filter,
+            searchQuery: value,
+            page: 1
+        })
+    }, 600);
     return (
         <div className="border relative h-full">
-            <Users open={showUserList} onClose={() => { setShowUserList(false) }} />
+            <Users open={showUserList} refetch={refetch} onClose={() => { setShowUserList(false) }} />
             <div>
                 <div className="flex px-3 border-b py-2 items-center justify-between">
                     <div className="rounded-full w-10 h-10 flex items-center justify-center overflow-hidden ">
@@ -69,16 +82,15 @@ const SideBar = () => {
                     </div>
                 </div>
 
-                <div className='relative px-3 py-2 '>
-                    <div className='absolute [top:18px] left-5'>
-                        <MagnifyingGlass size={22} />
-                    </div>
-                    <input type='text' className='search' placeholder='Search chat' />
-                </div>
+                <SearchInput callBack={debouncedSetFilter} />
+
             </div>
             <div className='overflow-auto  [height:83%]'>
                 {
-                    data.map((converationItem) => (
+                    data?.data?.length === 0 && <div className='text-center py-2'>No conversation found.</div>
+                }
+                {
+                    data?.data?.map((converationItem) => (
                         <ListItem key={converationItem._id} {...converationItem} isActive={converationItem._id === conversationId} />
                     ))
                 }

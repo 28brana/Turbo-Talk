@@ -1,15 +1,21 @@
 import { VideoCamera, Phone, Info } from '@phosphor-icons/react';
 import ChatRender from './ChatRender';
+import {useSelector} from 'react-redux';
+// import { useParams } from 'react-router-dom';
+
 const ChatScreen = () => {
+
+    const conversation=useSelector(state=>state.conversation);
+   
     return (
         <div className='flex flex-col h-full'>
             <div className="border flex px-3 py-2 items-center justify-between">
                 <div className="flex gap-3 items-center">
                     <div className="rounded-full w-10 h-10 flex items-center justify-center overflow-hidden ">
-                        <img className="object-contain" src={"https://picsum.photos/200/300"} alt="profile" />
+                        <img className="object-contain" src={conversation.userDetail.avatar} alt="profile" />
                     </div>
                     <div className="flex flex-col border">
-                        <p className="text-base font-semibold">Keerti</p>
+                        <p className="text-base font-semibold">{conversation.userDetail.name}</p>
                         <p className="text-xs">online</p>
                     </div>
                 </div>

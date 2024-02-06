@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom';
 const Chat = () => {
     const { conversationId } = useParams();
 
-    console.log(conversationId);
     return (
         <div className="p-7 bg-backgroundSecondary">
             <div className="flex w-full rounded-lg bg-white [height:92vh] overflow-hidden ">
