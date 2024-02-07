@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 import UserDetail from './UserDetail';
 import { logout } from '../../../redux/slice/auth.slice';
 
-const ListItem = ({ _id, avatar, name, lastMessage, lastActive, unseenMessage, isActive }) => {
+const ListItem = ({ _id, avatar, name, lastMessage, email,lastActive, unseenMessage, isActive }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const conversation = useSelector(state => state.conversation);
@@ -21,6 +21,7 @@ const ListItem = ({ _id, avatar, name, lastMessage, lastActive, unseenMessage, i
             _id,
             avatar,
             name,
+            email,
             lastMessage,
             lastActive,
             unseenMessage,

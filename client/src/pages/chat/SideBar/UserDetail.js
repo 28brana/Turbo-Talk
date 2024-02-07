@@ -15,7 +15,7 @@ const UserDetail = ({ open, onClose ,userDetail}) => {
                     <div className="rounded-full w-52 h-52 flex items-center justify-center overflow-hidden ">
                         <img className="object-contain" src={userDetail.avatar} alt="profile" />
                     </div>
-                    <p className="text-xl mt-3 font-semibold">{userDetail.username}</p>
+                    <p className="text-xl mt-3 font-semibold">{userDetail.username || userDetail.name}</p>
                     <p className="text-lg mt-2">{userDetail.email}</p>
                 </div>
             </div>
