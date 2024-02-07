@@ -1,10 +1,12 @@
 import conversationModel from "../models/conversation.model.js";
 
 export const getAllConversation = async (page = 1, limit = 10, searchQuery = '', userId) => {
-    let filter = {};
-    if (searchQuery) {
-        filter = { name: { $regex: searchQuery, $options: 'i' } };
-    }
+    let filter = {
+        participants: userId
+    };
+    // if (searchQuery) {
+    //     filter = { name: { $regex: searchQuery, $options: 'i' } };
+    // }
     const skip = (page - 1) * limit;
 
     const [rawData, totalUsersCount] = await Promise.all([

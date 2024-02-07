@@ -4,11 +4,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getUserConversation } from '../../../service/conversation.service';
-import { debounce } from 'lodash';
-import SearchInput from '../../../component/SearchInput';
+// import { debounce } from 'lodash';
+// import SearchInput from '../../../component/SearchInput';
 import { useDispatch } from 'react-redux';
 import { currentConversation } from '../../../redux/slice/conversation.slice';
 import { useSelector } from 'react-redux';
+import UserDetail from './UserDetail';
+import { logout } from '../../../redux/slice/auth.slice';
 
 const ListItem = ({ _id, avatar, name, lastMessage, lastActive, unseenMessage, isActive }) => {
     const dispatch = useDispatch();
@@ -50,39 +52,56 @@ const ListItem = ({ _id, avatar, name, lastMessage, lastActive, unseenMessage, i
 const SideBar = () => {
     const { conversationId } = useParams();
     const [showUserList, setShowUserList] = useState(false);
+    const [openUserDetail, setUserDetail] = useState(false);
+    const userDetail = useSelector(state => state.auth.userDetail);
+    const navigate = useNavigate();
 
-    const [filter, setFilter] = useState({
+    const dispatch = useDispatch();
+    const filter = {
         page: 1,
-        limit: 20,
+        limit: 50,
         searchQuery: ''
-    })
+    }
+    // const [filter, setFilter] = useState({
+    //     page: 1,
+    //     limit: 50,
+    //     searchQuery: ''
+    // })
     const { data, refetch } = useQuery({ queryKey: ['conversationList', filter], queryFn: ({ queryKey }) => getUserConversation(queryKey[1]) });
-    const debouncedSetFilter = debounce((value) => {
-        setFilter({
-            ...filter,
-            searchQuery: value,
-            page: 1
-        })
-    }, 600);
+    // const debouncedSetFilter = debounce((value) => {
+    //     setFilter({
+    //         ...filter,
+    //         searchQuery: value,
+    //         page: 1
+    //     })
+    // }, 600);
+    const handleLogout = () => {
+        dispatch(logout());
+        navigate('/auth/login');
+    }
     return (
         <div className="border relative h-full">
+            <UserDetail open={openUserDetail} userDetail={userDetail} onClose={() => { setUserDetail(false) }} />
             <Users open={showUserList} refetch={refetch} onClose={() => { setShowUserList(false) }} />
             <div>
                 <div className="flex px-3 border-b py-2 items-center justify-between">
-                    <div className="rounded-full w-10 h-10 flex items-center justify-center overflow-hidden ">
-                        <img className="object-contain" src={"https://picsum.photos/200/300"} alt="profile" />
+                    <div className="rounded-full cursor-pointer w-10 h-10 flex items-center justify-center overflow-hidden" onClick={() => { setUserDetail(true) }}>
+                        <img className="object-contain" src={userDetail.avatar} alt="profile" />
                     </div>
                     <div className="flex items-center gap-4">
                         <div className='icon-btn' onClick={() => { setShowUserList(true) }}>
                             <ChatDots size={24} />
                         </div>
-                        <div className='icon-btn'>
+                        <div className='icon-btn' onClick={handleLogout}>
                             <Power size={24} />
                         </div>
                     </div>
                 </div>
+                <div className='border text-center font-semibold text-secondary py-2'>
+                    Conversations
+                </div>
 
-                <SearchInput callBack={debouncedSetFilter} />
+                {/* <SearchInput callBack={debouncedSetFilter} /> */}
 
             </div>
             <div className='overflow-auto  [height:83%]'>

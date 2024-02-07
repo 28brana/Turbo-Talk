@@ -1,4 +1,4 @@
-import ChatScreen from "./ChatScreen";
+import ChatScreen from "./ChatMain/ChatScreen";
 import SideBar from "./SideBar";
 import { useParams } from 'react-router-dom';
 
@@ -11,9 +11,18 @@ const Chat = () => {
                 <div className="flex-1" >
                     <SideBar />
                 </div>
-                <div className="[flex:3]" >
-                    <ChatScreen/>
-                </div>
+                {
+                    conversationId ? (
+                        <div className="[flex:3]" >
+                            <ChatScreen />
+                        </div>
+                    ) : (
+                        <div className="[flex:3] flex items-center justify-center">
+                            <p>No Chat Found</p>
+                        </div>
+                    )
+                }
+
             </div>
         </div>
     )

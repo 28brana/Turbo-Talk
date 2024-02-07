@@ -7,7 +7,7 @@ const userSchema = new Schema({
         required: true,
         unique: true,
         trim: true,
-        lowercase:true,
+        lowercase: true,
     },
     username: {
         type: String,
@@ -32,6 +32,7 @@ userSchema.pre("save", async function (next) {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(this.password, saltRounds);
         this.password = hashedPassword;
+        this.avatar = `https://avatar.iran.liara.run/public/boy?username=${this.email}`
         next();
     } catch (error) {
         next(error);
