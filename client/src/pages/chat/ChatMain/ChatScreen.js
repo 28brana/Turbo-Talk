@@ -3,8 +3,7 @@ import ChatRender from './ChatRender';
 import { useSelector } from 'react-redux';
 import UserDetail from '../SideBar/UserDetail';
 import { useState } from 'react';
-// import { useParams } from 'react-router-dom';
-
+import BottomInput from './BottomInput';
 const ChatScreen = () => {
 
     const conversation = useSelector(state => state.conversation);
@@ -35,7 +34,7 @@ const ChatScreen = () => {
                 <ChatRender />
             </div>
             <div className='border'>
-                bottom
+                <BottomInput/>
             </div>
         </div>
     )
