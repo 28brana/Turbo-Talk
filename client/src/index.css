@@ -59,18 +59,47 @@ html{
 }
 
 
-
 .sidebar {
     transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  }
+}
   
   /* Apply styles based on the sidebar state */
 .sidebar.closed {
-transform: translateX(-100%);
-opacity: 0;
+    transform: translateX(-100%);
+    opacity: 0;
 }
 
 .sidebar.open {
-transform: translateX(0);
-opacity: 1;
+    transform: translateX(0);
+    opacity: 1;
+}
+
+
+.message{
+    @apply shadow-md flex flex-col px-4 py-2 rounded-md [max-width:50%] font-medium break-words;
+}
+.message-right{
+    background-color: #F4F4F4;
+    border: 2px solid #ececec;
+    @apply text-textPrimary ;
+    
+}
+.message-right span{
+    @apply text-textSecondary;
+}
+
+
+.message-left{
+    border: 2px solid #017e61;
+    @apply bg-secondary text-white;
+}
+.message-left span{
+    color: #fffefecf;
+}
+
+.chat-input{
+    @apply border px-4 py-3 flex-1 rounded-md bg-backgroundSecondary;
+}
+.chat-input:focus{
+    @apply outline-secondary bg-hover;
 }

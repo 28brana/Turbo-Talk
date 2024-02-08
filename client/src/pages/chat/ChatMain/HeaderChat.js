@@ -1,10 +1,8 @@
-import { VideoCamera, Phone } from '@phosphor-icons/react';
-import ChatRender from './ChatRender';
+import { Phone, VideoCamera } from '@phosphor-icons/react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import UserDetail from '../SideBar/UserDetail';
-import { useState } from 'react';
-import BottomInput from './BottomInput';
-const ChatScreen = () => {
+const HeaderChat = () => {
 
     const conversation = useSelector(state => state.conversation);
     const [openDetail, setOpenDetail] = useState(false);
@@ -30,14 +28,8 @@ const ChatScreen = () => {
                     </div>
                 </div>
             </div>
-            <div className='border flex-1'>
-                <ChatRender />
-            </div>
-            <div className='border'>
-                <BottomInput/>
-            </div>
         </div>
     )
 }
 
-export default ChatScreen;
+export default HeaderChat;
