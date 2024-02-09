@@ -1,20 +1,17 @@
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../utils/config.js';
+import { verifyJWTToken } from '../utils/jwtUtils.js';
 
 const verifyToken = async (req, res, next) => {
     const token = req.headers.authorization;
 
     try {
-        if (!token || !token.startsWith('Bearer ')) {
-            throw new Error('Invalid token');
-        }
-
-        const decoded = jwt.verify(token.split('Bearer ')[1], JWT_SECRET);
-        req.userId=decoded.userId;
+        const decoded = verifyJWTToken(token);
+        req.userId = decoded.userId;
         next();
 
     } catch (err) {
-        console.log({err})
+        console.log({ err })
         return res.status(401).send('Unauthorized');
     }
 }

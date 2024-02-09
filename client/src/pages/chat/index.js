@@ -1,9 +1,29 @@
+import { useEffect } from "react";
+import { useParams } from 'react-router-dom';
+import { useSocket } from "../../context/SocketContext";
 import ChatMain from "./ChatMain";
 import SideBar from "./SideBar";
-import { useParams } from 'react-router-dom';
 
 const Chat = () => {
+    const socket = useSocket();
     const { conversationId } = useParams();
+
+    useEffect(() => {
+        if(conversationId){
+            socket.emit('room:join',conversationId);
+        }
+     
+        socket.on('connect_error', (err)=>{
+            console.log('Connection Error',err)
+        });
+
+        return ()=>{
+            if(conversationId){
+                socket.emit('room:leave',conversationId);
+            }
+        }
+    }, [conversationId, socket]);
+
 
     return (
         <div className="p-7 bg-backgroundSecondary">
@@ -22,7 +42,6 @@ const Chat = () => {
                         </div>
                     )
                 }
-
             </div>
         </div>
     )

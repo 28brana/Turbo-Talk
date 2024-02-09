@@ -17,6 +17,7 @@ import { store } from './redux/store';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Chat from './pages/chat';
+import { SocketProvider } from './context/SocketContext';
 const router = createBrowserRouter([
   {
     path: "/auth",
@@ -32,12 +33,20 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path:"/chat",
-    element:<Chat/>
+    path: "/chat",
+    element: (
+      <SocketProvider>
+        <Chat />
+      </SocketProvider>
+    )
   },
   {
-    path:"/chat/:conversationId",
-    element:<Chat/>
+    path: "/chat/:conversationId",
+    element: (
+      <SocketProvider>
+        <Chat />
+      </SocketProvider>
+    )
   },
 ]);
 
@@ -47,11 +56,13 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        <ToastContainer
-          position="top-right"
-          theme='colored'
-        />
+        <SocketProvider>
+          <RouterProvider router={router} />
+          <ToastContainer
+            position="top-right"
+            theme='colored'
+          />
+        </SocketProvider>
       </QueryClientProvider>
     </Provider>
   </React.StrictMode>
