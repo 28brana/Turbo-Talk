@@ -56,13 +56,11 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <SocketProvider>
           <RouterProvider router={router} />
           <ToastContainer
             position="top-right"
             theme='colored'
           />
-        </SocketProvider>
       </QueryClientProvider>
     </Provider>
   </React.StrictMode>

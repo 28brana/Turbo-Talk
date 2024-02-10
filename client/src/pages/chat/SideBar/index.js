@@ -15,8 +15,9 @@ import { logout } from '../../../redux/slice/auth.slice';
 const ListItem = ({ _id, avatar, name, lastMessage, email,lastActive, unseenMessage, isActive }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const conversation = useSelector(state => state.conversation);
-    if (isActive && conversation.userDetail._id !== _id) {
+   
+    const handleClick = () => {
+        navigate(`/chat/${_id}`);
         dispatch(currentConversation({
             _id,
             avatar,
@@ -27,9 +28,6 @@ const ListItem = ({ _id, avatar, name, lastMessage, email,lastActive, unseenMess
             unseenMessage,
             isActive
         }))
-    }
-    const handleClick = () => {
-        navigate(`/chat/${_id}`);
     }
     return (
         <div onClick={handleClick} className={`flex items-center gap-4 px-4 py-3 border-b hover:bg-hover cursor-pointer ${isActive ? 'bg-hover' : ''}`}>
@@ -76,6 +74,7 @@ const SideBar = () => {
     //         page: 1
     //     })
     // }, 600);
+   
     const handleLogout = () => {
         dispatch(logout());
         navigate('/auth/login');
