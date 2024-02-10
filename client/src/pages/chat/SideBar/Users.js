@@ -11,7 +11,7 @@ import {
 import { conversationService } from '../../../service';
 import { toast } from 'react-toastify';
 
-const ListItem = ({ _id, avatar, username, email, onClose, refetch }) => {
+const UserListItem = ({ _id, avatar, username, email, onClose, refetch }) => {
     const navigate = useNavigate();
     const { mutate } = useMutation({
         mutationFn: conversationService.createConversation,
@@ -86,7 +86,7 @@ const Users = ({ open, onClose, refetch }) => {
                 }
                 {
                     userList?.map((userDetail) => (
-                        <ListItem {...userDetail} key={userDetail._id} refetch={refetch} onClose={onClose} />
+                        <UserListItem {...userDetail} key={userDetail._id} refetch={refetch} onClose={onClose} />
                     ))
                 }
                 {

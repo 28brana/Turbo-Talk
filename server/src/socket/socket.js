@@ -20,7 +20,7 @@ const initalizeSocket = (io) => {
         console.log(`Use connected : ${socket.userId}`);
 
         socket.on('room:join', (conversationId) => {
-            console.log('Join room',conversationId)
+            console.log('Join room', conversationId)
             socket.join(conversationId);
         })
 
@@ -28,6 +28,11 @@ const initalizeSocket = (io) => {
             console.log('Leave room')
             socket.leave(roomName);
         });
+
+        socket.on('message:sent', (data) => {
+            const { message, conversationId } = data;
+            io.to(conversationId).emit('message:sent', message);
+        })
 
         socket.on("disconnect", () => {
             console.log(`User Disconnected : ${socket.userId} `);

@@ -9,17 +9,21 @@ const Chat = () => {
     const { conversationId } = useParams();
 
     useEffect(() => {
-        if(conversationId){
-            socket.emit('room:join',conversationId);
+        if (conversationId) {
+            socket.emit('room:join', conversationId);
         }
-     
-        socket.on('connect_error', (err)=>{
-            console.log('Connection Error',err)
+
+        socket.on('connect', () => {
+            console.log('Socket connected');
+        });
+        
+        socket.on('connect_error', (err) => {
+            console.log('Connection Error', err)
         });
 
-        return ()=>{
-            if(conversationId){
-                socket.emit('room:leave',conversationId);
+        return () => {
+            if (conversationId) {
+                socket.emit('room:leave', conversationId);
             }
         }
     }, [conversationId, socket]);
