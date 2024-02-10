@@ -7,27 +7,17 @@ import SideBar from "./SideBar";
 const Chat = () => {
     const socket = useSocket();
     const { conversationId } = useParams();
-
+    // console.log(socket.connected);
     useEffect(() => {
         if (conversationId) {
             socket.emit('room:join', conversationId);
         }
-
-        socket.on('connect', () => {
-            console.log('Socket connected');
-        });
-        
-        socket.on('connect_error', (err) => {
-            console.log('Connection Error', err)
-        });
-
         return () => {
             if (conversationId) {
                 socket.emit('room:leave', conversationId);
             }
         }
     }, [conversationId, socket]);
-
 
     return (
         <div className="p-7 bg-backgroundSecondary">
@@ -38,7 +28,7 @@ const Chat = () => {
                 {
                     conversationId ? (
                         <div className="[flex:3]" >
-                            <ChatMain />
+                            <ChatMain conversationId={conversationId} />
                         </div>
                     ) : (
                         <div className="[flex:3] flex items-center justify-center">

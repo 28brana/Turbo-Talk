@@ -14,14 +14,18 @@ const ChatMain = ({ conversationId }) => {
     }
     useEffect(() => {
         const handleReceivedMessage = (value) => {
-            console.log(value);
             setMessages(prevMessages => [...prevMessages, value]);
         };
-        socket.on('message:sent', handleReceivedMessage);
+        socket.on('message:receive', handleReceivedMessage);
         return () => {
-            socket.off('message:sent', handleReceivedMessage);
+            socket.off('message:receive', handleReceivedMessage);
         };
     }, [socket])
+
+    useEffect(() => {
+        setMessages([]);
+    }, [conversationId])
+    
     return (
         <div className='flex flex-col h-full'>
             <div className='border'>

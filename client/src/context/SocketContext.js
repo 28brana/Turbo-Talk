@@ -8,11 +8,12 @@ const SocketContext = createContext();
 const SocketProvider = ({ children }) => {
     const token = store.getState().auth.token;
     const socket = io(BASE_URL, { auth: { token: `Bearer ${token}` } });
-    useEffect(() => {
-        return () => {
-            socket.disconnect();
-        }
-    }, [socket])
+   
+    useEffect(()=>{
+        socket.on('connect_error', (err) => {
+            console.log('Connection Error', err)
+        });
+    },[socket])
     return (
         <SocketContext.Provider value={socket}>
             {children}

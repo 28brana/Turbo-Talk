@@ -31,7 +31,7 @@ const initalizeSocket = (io) => {
 
         socket.on('message:sent', (data) => {
             const { message, conversationId } = data;
-            io.to(conversationId).emit('message:sent', message);
+            socket.broadcast.to(conversationId).emit('message:receive', message);
         })
 
         socket.on("disconnect", () => {
