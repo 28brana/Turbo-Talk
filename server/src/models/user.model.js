@@ -18,6 +18,14 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+    status: {
+        type: Boolean,
+        default: true,
+    },
+    lastOnlineTime: {
+        type: Date,
+        default: Date.now,
+    },
     avatar: {
         type: String,
     },

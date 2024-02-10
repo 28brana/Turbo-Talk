@@ -1,3 +1,4 @@
+import { updateUserStatus } from "../service/user.service.js";
 import { verifyJWTToken } from "../utils/jwtUtils.js";
 
 const initalizeSocket = (io) => {
@@ -18,16 +19,32 @@ const initalizeSocket = (io) => {
     })
     io.on("connection", (socket) => {
         console.log(`Use connected : ${socket.userId}`);
+        updateUserStatus(socket.userId, true);
 
         socket.on('room:join', (conversationId) => {
             console.log('Join room', conversationId)
             socket.join(conversationId);
+            socket.broadcast.to(conversationId).emit('user:status', {
+                userId: socket.userId,
+                status: true
+            });
+
+            socket.on('user:typing', (status) => {
+                socket.broadcast.to(conversationId).emit('user:typing', status);
+            })
+
         })
 
-        socket.on('room:leave', (roomName) => {
+        socket.on('room:leave', (conversationId) => {
             console.log('Leave room')
-            socket.leave(roomName);
+            socket.broadcast.to(conversationId).emit('user:status', {
+                userId: socket.userId,
+                status: false
+            });
+            socket.leave(conversationId);
         });
+
+
 
         socket.on('message:sent', (data) => {
             const { message, conversationId } = data;
@@ -36,6 +53,7 @@ const initalizeSocket = (io) => {
 
         socket.on("disconnect", () => {
             console.log(`User Disconnected : ${socket.userId} `);
+            updateUserStatus(socket.userId, false);
         })
     });
 

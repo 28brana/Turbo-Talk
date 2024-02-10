@@ -2,7 +2,7 @@ import { ArrowLeft } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getAllUser } from '../../../service/user.service';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import debounce from 'lodash/debounce';
 import SearchInput from '../../../component/SearchInput';
 import {
@@ -10,13 +10,14 @@ import {
 } from '@tanstack/react-query';
 import { conversationService } from '../../../service';
 import { toast } from 'react-toastify';
+import { formatTime } from '../../../utils/dateHelper';
 
-const UserListItem = ({ _id, avatar, username, email, onClose, refetch }) => {
+const UserListItem = ({ _id, avatar, username, email, onClose, refetch, status, lastOnlineTime }) => {
     const navigate = useNavigate();
     const { mutate } = useMutation({
         mutationFn: conversationService.createConversation,
         onSuccess: (data) => {
-            if(!data?.alreadyExists){
+            if (!data?.alreadyExists) {
                 refetch()
             }
             onClose();
@@ -38,20 +39,25 @@ const UserListItem = ({ _id, avatar, username, email, onClose, refetch }) => {
             </div>
             <div className='flex flex-1 flex-col '>
                 <p className='text-base font-semibold'>{username}</p>
-                <p className='text-sm'>{email}</p>
+                <p className='text-sm text-textSecondary'>{email}</p>
+            </div>
+            <div className='text-xs text-textSecondary self-start mt-2'>
+                {
+                    status ? 'Online' : formatTime(lastOnlineTime)
+                }
             </div>
         </div>
     )
 }
 const Users = ({ open, onClose, refetch }) => {
-    
+
     const [filter, setFilter] = useState({
         page: 1,
         limit: 20,
         searchQuery: ''
     })
     const [previousData, setPreviousData] = useState([]);
-    const { data } = useQuery({ queryKey: ['userList', filter], queryFn: ({ queryKey }) => getAllUser(queryKey[1]) });
+    const { data, refetch:refetchUserList } = useQuery({ queryKey: ['userList', filter], queryFn: ({ queryKey }) => getAllUser(queryKey[1]) });
 
     const debouncedSetFilter = debounce((value) => {
         setPreviousData([]);
@@ -71,6 +77,11 @@ const Users = ({ open, onClose, refetch }) => {
         })
     }
     const userList = [...previousData, ...(data?.users || [])];
+    useEffect(() => {
+        if (open) {
+            refetchUserList();
+        }
+    }, [open, refetchUserList])
     return (
         <div className={`absolute border translate-x-0 w-full h-full bg-white z-10 left-0 top-0 ease-in-out duration-300 sidebar ${open ? 'open' : 'closed'}`}>
             <div className="flex items-center  px-3 py-2 gap-4">

@@ -11,6 +11,7 @@ import { currentConversation } from '../../../redux/slice/conversation.slice';
 import { useSelector } from 'react-redux';
 import UserDetail from './UserDetail';
 import { logout } from '../../../redux/slice/auth.slice';
+import { useSocket } from '../../../context/SocketContext';
 
 const ListItem = ({ _id, avatar, name, lastMessage, email,lastActive, unseenMessage, isActive }) => {
     const dispatch = useDispatch();
@@ -50,6 +51,7 @@ const ListItem = ({ _id, avatar, name, lastMessage, email,lastActive, unseenMess
 
 const SideBar = () => {
     const { conversationId } = useParams();
+    const socket=useSocket();
     const [showUserList, setShowUserList] = useState(false);
     const [openUserDetail, setUserDetail] = useState(false);
     const userDetail = useSelector(state => state.auth.userDetail);
@@ -77,6 +79,7 @@ const SideBar = () => {
    
     const handleLogout = () => {
         dispatch(logout());
+        socket.disconnect();
         navigate('/auth/login');
     }
     return (

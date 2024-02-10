@@ -42,10 +42,23 @@ export const getAllUsers = async (page = 1, limit = 10, searchQuery = '', userId
     }
     const skip = (page - 1) * limit;
     const [users, totalUsersCount] = await Promise.all([
-        userModel.find(filter, '_id email username createdAt avatar').skip(skip).limit(limit),
+        userModel.find(filter, '_id email username createdAt avatar status lastOnlineTime').skip(skip).limit(limit).sort({ status: 1 }),
         userModel.countDocuments(filter),
     ]);
 
     const remainingUserCount = Math.max(0, totalUsersCount - (page * limit));
     return { users, totalUsersCount, remainingUserCount, remessage: "Users retrieved successfully." };
 };
+
+// Socket Used Function
+
+export const updateUserStatus = async (userId, status) => {
+    try {
+        await userModel.findOneAndUpdate(
+            { _id: userId },
+            { $set: { status, lastOnlineTime: status ? null : new Date() } }
+        )
+    } catch (err) {
+        console.log(err)
+    }
+}

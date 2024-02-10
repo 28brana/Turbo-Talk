@@ -1,10 +1,29 @@
 import { Phone, VideoCamera } from '@phosphor-icons/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import UserDetail from '../SideBar/UserDetail';
+import { useSocket } from '../../../context/SocketContext';
 const HeaderChat = () => {
 
     const conversation = useSelector(state => state.conversation);
+    const [status, setStatus] = useState(false);
+    const [typing, setTyping] = useState(false);
+    const socket = useSocket();
+    useEffect(() => {
+        const handleUserStatus = (result) => {
+            setStatus(result.status);
+        }
+        const handleUserTyping = (status) => {
+            setTyping(status);
+        }
+        socket.on('user:status', handleUserStatus);
+        socket.on('user:typing', handleUserTyping);
+
+        return () => {
+            socket.off('user:status', handleUserStatus);
+            socket.off('user:typing', handleUserTyping);
+        }
+    }, [socket])
     const [openDetail, setOpenDetail] = useState(false);
     return (
         <div className='flex flex-col h-full'>
@@ -16,7 +35,11 @@ const HeaderChat = () => {
                     </div>
                     <div className="flex flex-col ">
                         <p className="text-base font-semibold">{conversation.userDetail.name}</p>
-                        <p className="text-xs">online</p>
+                        <p className="text-xs">
+                            {
+                                typing ? 'Typing ...' : status ? 'online' : ''
+                            }
+                        </p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
