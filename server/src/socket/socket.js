@@ -1,7 +1,21 @@
+import { createAdapter } from "@socket.io/redis-adapter";
+import Redis from "ioredis";
 import { updateUserStatus } from "../service/user.service.js";
+import { REDIS_HOST } from "../utils/config.js";
 import { verifyJWTToken } from "../utils/jwtUtils.js";
 
-const initalizeSocket = (io) => {
+const pubClient = new Redis(REDIS_HOST);
+
+pubClient.on("error", (err) => {
+    console.log('Redis Error', err);
+});
+
+const subClient = pubClient.duplicate();
+
+const initalizeSocket = async (io) => {
+
+    io.adapter(createAdapter(pubClient, subClient));
+    
     io.use((socket, next) => {
         try {
             if (socket.handshake.auth && socket.handshake.auth.token) {
