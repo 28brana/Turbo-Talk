@@ -34,14 +34,17 @@ const UserListItem = ({ _id, avatar, username, email, onClose, refetch, status, 
     }
     return (
         <div onClick={handleClick} className='flex items-center gap-4 px-4 py-3 border-b hover:bg-hover cursor-pointer'>
-            <div className="rounded-full w-11 h-11 flex items-center justify-center overflow-hidden ">
+            <div className="rounded-full w-11 relative h-11 flex items-center justify-center  ">
                 <img className="object-contain" src={avatar} alt="profile" />
+                {
+                    status && <span className='absolute w-3 h-3 bottom-0 right-1 border border-white bg-green-500 z-10 rounded-full'/>
+                }
             </div>
             <div className='flex flex-1 flex-col '>
                 <p className='text-base font-semibold'>{username}</p>
                 <p className='text-sm text-textSecondary'>{email}</p>
             </div>
-            <div className='text-xs text-textSecondary self-start mt-2'>
+            <div className='text-xs text-textSecondary'>
                 {
                     status ? 'Online' : formatTime(lastOnlineTime)
                 }
@@ -57,7 +60,7 @@ const Users = ({ open, onClose, refetch }) => {
         searchQuery: ''
     })
     const [previousData, setPreviousData] = useState([]);
-    const { data, refetch:refetchUserList } = useQuery({ queryKey: ['userList', filter], queryFn: ({ queryKey }) => getAllUser(queryKey[1]) });
+    const { data, refetch: refetchUserList } = useQuery({ queryKey: ['userList', filter], queryFn: ({ queryKey }) => getAllUser(queryKey[1]) });
 
     const debouncedSetFilter = debounce((value) => {
         setPreviousData([]);

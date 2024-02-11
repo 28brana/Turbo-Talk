@@ -27,8 +27,11 @@ const HeaderChat = () => {
             <UserDetail open={openDetail} onClose={() => { setOpenDetail(false) }} userDetail={conversation.userDetail} />
             <div className="border flex px-3 py-2 items-center justify-between">
                 <div className="flex gap-3 items-center">
-                    <div onClick={() => { setOpenDetail(true) }} className="rounded-full cursor-pointer w-10 h-10 flex items-center justify-center overflow-hidden ">
+                    <div onClick={() => { setOpenDetail(true) }} className="rounded-full cursor-pointer w-10 h-10 flex items-center justify-center relative">
                         <img className="object-contain" src={conversation.userDetail.avatar} alt="profile" />
+                        {
+                            status && <span className='absolute w-3 h-3 bottom-0 right-0 border border-white bg-green-500 z-10 rounded-full' />
+                        }
                     </div>
                     <div className="flex flex-col ">
                         <p className="text-base font-semibold">{conversation.userDetail.name}</p>

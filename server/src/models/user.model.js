@@ -20,11 +20,10 @@ const userSchema = new Schema({
     },
     status: {
         type: Boolean,
-        default: true,
+        default: false,
     },
     lastOnlineTime: {
         type: Date,
-        default: Date.now,
     },
     avatar: {
         type: String,

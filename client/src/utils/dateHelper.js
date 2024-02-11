@@ -1,4 +1,7 @@
 export const formatTime = (value) => {
+    if(!value){
+        return ''
+    }
     const date = new Date(value);
     const hours = date.getHours();
     const minutes = date.getMinutes();
