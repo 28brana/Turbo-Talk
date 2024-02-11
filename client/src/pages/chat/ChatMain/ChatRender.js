@@ -73,7 +73,6 @@ const OldChat = memo(() => {
                         const nextDay = new Date(messages[index + 1]?.createdAt);
                         isSameDay = currentDay.toDateString() === nextDay.toDateString();
                     }
-                    console.log(isSameDay);
                     return (
                         <div key={index}>
                             <Message  {...message} isMe={message.sender === userDetail._id} />

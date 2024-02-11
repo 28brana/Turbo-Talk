@@ -1,7 +1,5 @@
-import bcrypt from "bcrypt";
 import userModel from "../models/user.model.js";
 import { generateToken } from "../utils/jwtUtils.js";
-import messageModel from "../models/message.model.js";
 
 export const registerUser = async (userData) => {
     const existingUser = await userModel.findOne({ email: userData.email.toLowerCase() });
@@ -74,13 +72,3 @@ export const updateUserLastOnlineTime = async (userId) => {
     }
 }
 
-export const createMessage = async (data) => {
-    const formatData={
-        conversation:data.conversationId,
-        sender:data.message.sender,
-        files:data.message.files,
-        text:data.message.text
-    }
-    console.log(formatData)
-    await messageModel.create(formatData);
-}

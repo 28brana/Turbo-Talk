@@ -1,3 +1,4 @@
+import conversationModel from "../models/conversation.model.js";
 import messageModel from "../models/message.model.js";
 
 export const getAllConversationMessage = async (page = 1, limit = 10, conversationId) => {
@@ -17,3 +18,19 @@ export const getAllConversationMessage = async (page = 1, limit = 10, conversati
     return { data, remainingMessages, message: "Conversations retrieved successfully." };
 };
 
+
+export const createMessage = async (data) => {
+    const formatData = {
+        conversation: data.conversationId,
+        sender: data.message.sender,
+        files: data.message.files,
+        text: data.message.text
+    }
+    console.log(formatData)
+    const newMessage = await messageModel.create(formatData);
+
+    await conversationModel.findOneAndUpdate(
+        { _id: data.conversationId },
+        { $set: { latestMessage: newMessage._id } }
+    )
+}

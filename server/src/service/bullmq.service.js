@@ -1,7 +1,7 @@
 import { Queue, Worker } from 'bullmq';
 import Redis from 'ioredis';
 import { REDIS_HOST } from '../utils/config.js';
-import { createMessage } from './user.service.js';
+import { createMessage } from './message.service.js';
 
 const redisConfig = {
     connection: new Redis(REDIS_HOST, {

@@ -12,8 +12,9 @@ import { useSelector } from 'react-redux';
 import UserDetail from './UserDetail';
 import { logout } from '../../../redux/slice/auth.slice';
 import { useSocket } from '../../../context/SocketContext';
+import { formatTime } from '../../../utils/dateHelper';
 
-const ListItem = ({ _id, avatar, name, lastMessage, email,lastActive, unseenMessage, isActive,userId }) => {
+const ListItem = ({ _id, avatar, name, latestMessage, email, unseenMessage, isActive,userId }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
    
@@ -24,8 +25,7 @@ const ListItem = ({ _id, avatar, name, lastMessage, email,lastActive, unseenMess
             avatar,
             name,
             email,
-            lastMessage,
-            lastActive,
+            latestMessage,
             unseenMessage,
             isActive,
             userId
@@ -38,10 +38,10 @@ const ListItem = ({ _id, avatar, name, lastMessage, email,lastActive, unseenMess
             </div>
             <div className='flex flex-1 flex-col '>
                 <p className='text-base font-semibold'>{name}</p>
-                <p className='text-sm'>{lastMessage}</p>
+                <p className='text-sm'>{latestMessage?.text}</p>
             </div>
             <div className='flex flex-col items-end justify-between  gap-2'>
-                <p className='text-xs'>{lastActive}</p>
+                <p className='text-xs'>{formatTime(latestMessage?.createdAt)}</p>
                 {unseenMessage && <div className='rounded-full w-5 h-5 text-white px-1 bg-red-400 flex items-center justify-center text-xs'>
                     <p>{unseenMessage}</p>
                 </div>}

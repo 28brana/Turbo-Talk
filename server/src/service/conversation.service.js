@@ -10,7 +10,7 @@ export const getAllConversation = async (page = 1, limit = 10, searchQuery = '',
     const skip = (page - 1) * limit;
 
     const [rawData, totalUsersCount] = await Promise.all([
-        conversationModel.find(filter).skip(skip).limit(limit).populate('participants', 'email username avatar _id'),
+        conversationModel.find(filter).skip(skip).limit(limit).populate('participants', 'email username avatar _id').populate('latestMessage'),
         conversationModel.countDocuments(filter),
     ]);
 
