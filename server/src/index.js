@@ -8,6 +8,7 @@ import { PORT } from "./utils/config.js";
 import connectDb from "./utils/connect-db.js";
 import handleErrors from "./utils/handleError.js";
 import { morganChalk } from "./utils/morgan.js";
+import { startMessageQueueWorker } from "./service/bullmq.service.js";
 
 const app = express();
 const httpServer = createServer(app);
@@ -33,6 +34,7 @@ const startServer = () => {
     .listen(PORT, () => {
       console.log("Server Started");
       connectDb();
+      startMessageQueueWorker()
 
     })
     .on("error", (err) => {

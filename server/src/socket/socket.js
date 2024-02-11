@@ -4,6 +4,7 @@ import { updateUserStatus } from "../service/user.service.js";
 import { REDIS_HOST } from "../utils/config.js";
 import { verifyJWTToken } from "../utils/jwtUtils.js";
 import { redisClient } from "../utils/redisHelper.js";
+import { messageQueue } from "../service/bullmq.service.js";
 
 const pubClient = new Redis(REDIS_HOST);
 
@@ -60,8 +61,9 @@ const initalizeSocket = async (io) => {
 
 
 
-        socket.on('message:sent', (data) => {
+        socket.on('message:sent', async (data) => {
             const { message, conversationId } = data;
+            const result = await messageQueue.add('message', data);
             socket.broadcast.to(conversationId).emit('message:receive', message);
         })
 
