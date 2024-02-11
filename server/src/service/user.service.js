@@ -62,3 +62,13 @@ export const updateUserStatus = async (userId, status) => {
         console.log(err)
     }
 }
+export const updateUserLastOnlineTime = async (userId) => {
+    try {
+        await userModel.findOneAndUpdate(
+            { _id: userId },
+            { $set: { lastOnlineTime: new Date() } }
+        )
+    } catch (err) {
+        console.log(err)
+    }
+}

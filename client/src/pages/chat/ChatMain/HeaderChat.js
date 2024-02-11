@@ -6,25 +6,22 @@ import { useSocket } from '../../../context/SocketContext';
 const HeaderChat = () => {
 
     const conversation = useSelector(state => state.conversation);
-    const [status, setStatus] = useState(false);
+    const userStatus = useSelector(state => state.userStatus);
     const [typing, setTyping] = useState(false);
     const socket = useSocket();
     useEffect(() => {
-        const handleUserStatus = (result) => {
-            setStatus(result.status);
-        }
         const handleUserTyping = (status) => {
             setTyping(status);
         }
-        socket.on('user:status', handleUserStatus);
         socket.on('user:typing', handleUserTyping);
 
         return () => {
-            socket.off('user:status', handleUserStatus);
             socket.off('user:typing', handleUserTyping);
         }
     }, [socket])
     const [openDetail, setOpenDetail] = useState(false);
+
+    const status = userStatus?.onlineUsers?.includes(conversation.userDetail?.userId);
     return (
         <div className='flex flex-col h-full'>
             <UserDetail open={openDetail} onClose={() => { setOpenDetail(false) }} userDetail={conversation.userDetail} />

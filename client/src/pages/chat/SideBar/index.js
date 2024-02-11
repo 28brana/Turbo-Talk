@@ -13,7 +13,7 @@ import UserDetail from './UserDetail';
 import { logout } from '../../../redux/slice/auth.slice';
 import { useSocket } from '../../../context/SocketContext';
 
-const ListItem = ({ _id, avatar, name, lastMessage, email,lastActive, unseenMessage, isActive }) => {
+const ListItem = ({ _id, avatar, name, lastMessage, email,lastActive, unseenMessage, isActive,userId }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
    
@@ -27,7 +27,8 @@ const ListItem = ({ _id, avatar, name, lastMessage, email,lastActive, unseenMess
             lastMessage,
             lastActive,
             unseenMessage,
-            isActive
+            isActive,
+            userId
         }))
     }
     return (

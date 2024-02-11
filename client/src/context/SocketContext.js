@@ -2,18 +2,31 @@ import React, { createContext, useContext, useEffect } from 'react';
 import io from 'socket.io-client';
 import { BASE_URL } from "../utils/config";
 import { store } from "../redux/store";
-
+import { useDispatch } from 'react-redux';
+import { updateUserStatusList } from '../redux/slice/userStatus.slice';
 const SocketContext = createContext();
 
 const SocketProvider = ({ children }) => {
     const token = store.getState().auth.token;
     const socket = io(BASE_URL, { auth: { token: `Bearer ${token}` } });
-   
-    useEffect(()=>{
+    const dispatch = useDispatch();
+    
+    useEffect(() => {
+        const handleSetOnlineUser = (userList) => {
+            dispatch(updateUserStatusList(userList))
+        }
         socket.on('connect_error', (err) => {
             console.log('Connection Error', err)
         });
-    },[socket])
+
+
+        socket.emit('user:connect');
+        socket.on('user:online', handleSetOnlineUser)
+        return () => {
+            socket.off('user:connect');
+            socket.off('user:online', handleSetOnlineUser)
+        }
+    }, [dispatch, socket])
     return (
         <SocketContext.Provider value={socket}>
             {children}
