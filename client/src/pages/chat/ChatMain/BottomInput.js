@@ -64,7 +64,7 @@ const BottomInput = ({ handleAddMessage }) => {
                 onKeyDown={handleKeyDown}
                 placeholder='Type a message'
             />
-            <Upload files={files} setFiles={setFiles} />
+            <Upload fileList={files} setFiles={setFiles} />
             <div className='icon-btn' onClick={handleSubmit}>
                 <PaperPlaneRight size={26} />
             </div>

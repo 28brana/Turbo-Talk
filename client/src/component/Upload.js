@@ -3,24 +3,27 @@ import { useRef, useState } from 'react';
 import { uploadFiles } from '../service/message.service';
 import { toast } from 'react-toastify';
 
-const Upload = ({ files, setFiles }) => {
+const Upload = ({ fileList, setFiles }) => {
     const inputRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const handleChange = async (event) => {
         const files = event.target.files;
         if (files && files.length) {
-            
+
             if (files.length > 5) {
                 toast.error('You can upload a maximum of 5 files.')
                 return;
             }
+            const filesArray = Array.from(files);
 
-            files.forEach((file) => {
+            // Check the size of each file
+            for (let i = 0; i < filesArray.length; i++) {
+                const file = filesArray[i];
                 if (file.size > 10 * 1024 * 1024) {
-                    toast.error('Image size exceeds the limit of 10 MB.')
+                    toast.error('Image size exceeds the limit of 10 MB.');
                     return;
                 }
-            })
+            }
 
             const uploadPromises = [];
             try {
@@ -48,7 +51,7 @@ const Upload = ({ files, setFiles }) => {
     };
 
     const handleRemove = (index) => {
-        const newArray = [...files];
+        const newArray = [...fileList];
         newArray.splice(index, 1);
         setFiles(newArray);
     }
@@ -62,11 +65,11 @@ const Upload = ({ files, setFiles }) => {
                     </div>
                 )
             }
-            {files.length > 0 && (
+            {fileList.length > 0 && (
                 <div className='bg-white border absolute w-full left-0 [bottom:64px]  px-6 py-5 overflow-y-auto'>
                     <div className='flex flex-row gap-8 '>
                         {
-                            files.map((imgUrl, index) => (
+                            fileList.map((imgUrl, index) => (
                                 <div key={index} className='relative'>
                                     <div className='absolute bg-white icon-btn cursor-pointer border rounded-full p-1 -right-2 -top-2' onClick={() => {
                                         handleRemove(index)

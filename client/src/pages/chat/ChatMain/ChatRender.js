@@ -4,7 +4,8 @@ import { useParams } from 'react-router-dom';
 import { getAllConversationMessage } from '../../../service/message.service';
 import { formatTime } from '../../../utils/dateHelper';
 
-const Message = ({ text, isMe, createdAt }) => {
+const Message = ({ text, isMe, files, createdAt }) => {
+    console.log({ files });
     return (
         <div className={`flex my-3 mx-3 ${isMe ? 'justify-end' : 'justify-star'}`}>
             <div className={`message ${isMe ? 'message-left' : 'message-right'}`}>
