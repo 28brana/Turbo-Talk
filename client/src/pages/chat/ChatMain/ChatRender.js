@@ -56,7 +56,7 @@ const OldChat = memo(() => {
             {
                 loading ? (
                     <div className='border flex items-center justify-center'>
-                        <div class="border-gray-300 h-8 w-8 animate-spin rounded-full border-4 border-t-blue-600" />
+                        <div className="border-gray-300 h-8 w-8 animate-spin rounded-full border-4 border-t-blue-600" />
                     </div>
                 ) : remainingMessages > 0 && (
                     <div onClick={handleReadMore} className='text-center border py-1 text-secondary cursor-pointer'>

@@ -37,11 +37,12 @@ const initalizeSocket = async (io) => {
         console.log(`Use connected : ${socket.userId}`);
         updateUserStatus(socket.userId, true);
 
-        redisClient.sadd('user:online', socket.userId);
-
+        
         socket.on('user:connect', async () => {
+            await redisClient.sadd('user:online', socket.userId);
             const data = await redisClient.smembers('user:online');
-            socket.emit('user:online', data);
+            console.log('User connected : ',data.length)
+            io.sockets.emit('user:online', data);
         });
 
         socket.on('room:join', (conversationId) => {
@@ -66,20 +67,13 @@ const initalizeSocket = async (io) => {
             socket.broadcast.to(data.conversation).emit('message:sent', data);
         })
 
-        // socket.on('message:delivered', async (data) => {
-        //     const formatMessage = { ...data, status: 1 }
-        //     // await messageQueue.add('message', formatMessage);
-        // })
-        // socket.on('message:received', async (data) => {
-        //     const formatMessage = { ...data, status: 2 }
-        //     // await messageQueue.add('message', formatMessage);
-        // })
 
         socket.on("disconnect", async () => {
             console.log(`User Disconnected : ${socket.userId} `);
-            redisClient.srem('user:online', socket.userId);
+            await redisClient.srem('user:online', socket.userId);
             const data = await redisClient.smembers('user:online');
-            socket.emit('user:online', data);
+            io.sockets.emit('user:online', data);
+            console.log('User Disconnected : ',data.length)
             updateUserStatus(socket.userId, false);
         })
     });
