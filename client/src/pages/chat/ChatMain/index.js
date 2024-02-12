@@ -15,14 +15,14 @@ const ChatMain = ({ conversationId }) => {
     useEffect(() => {
         const handleMessageSentByOther = (value) => {
             setMessages(prevMessages => [...prevMessages, value]);
-            console.log('this chat')
-            if(conversationId === value.conversation){
-                console.log('this chat')
-                // socket.emit('message:received',value);
-            }else{
-                console.log('someoneelse chat chat')
-                // socket.emit('message:delivered',value);
-            }
+            // console.log('this chat')
+            // if(conversationId === value.conversation){
+            //     console.log('this chat')
+            //     // socket.emit('message:received',value);
+            // }else{
+            //     console.log('someoneelse chat chat')
+            //     // socket.emit('message:delivered',value);
+            // }
         };
         socket.on('message:sent', handleMessageSentByOther);
         return () => {
@@ -35,7 +35,7 @@ const ChatMain = ({ conversationId }) => {
     }, [conversationId])
 
     return (
-        <div className='flex flex-col h-full'>
+        <div className='flex flex-col h-full relative'>
             <div className='border'>
                 <HeaderChat />
             </div>

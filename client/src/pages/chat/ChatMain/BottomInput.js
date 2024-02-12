@@ -3,11 +3,13 @@ import EmojiPicker from '../../../component/EmojiPicker';
 import { PaperPlaneRight } from '@phosphor-icons/react';
 import { useSelector } from 'react-redux';
 import { useSocket } from '../../../context/SocketContext';
+import Upload from '../../../component/Upload';
 
 const BottomInput = ({ handleAddMessage }) => {
     const socket = useSocket();
     const userDetail = useSelector(state => state.auth.userDetail);
     const [text, setText] = useState('');
+    const [files, setFiles] = useState([]);
     const [isTyping, setIsTyping] = useState(false);
     const typingInstance = useRef(null);
 
@@ -40,11 +42,12 @@ const BottomInput = ({ handleAddMessage }) => {
         const formatMessage = {
             sender: userDetail._id,
             text: text,
-            files: [],
+            files: files,
             createdAt: createdAt.toString(),
         }
         handleAddMessage(formatMessage);
         setText("");
+        setFiles([]);
     }
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
@@ -52,7 +55,7 @@ const BottomInput = ({ handleAddMessage }) => {
         }
     }
     return (
-        <div className="border px-4 py-2 flex items-center gap-5">
+        <div className="border  px-4 py-2 flex items-center gap-5">
             <EmojiPicker addEmoji={addEmoji} />
             <input
                 value={text}
@@ -61,6 +64,7 @@ const BottomInput = ({ handleAddMessage }) => {
                 onKeyDown={handleKeyDown}
                 placeholder='Type a message'
             />
+            <Upload files={files} setFiles={setFiles} />
             <div className='icon-btn' onClick={handleSubmit}>
                 <PaperPlaneRight size={26} />
             </div>
