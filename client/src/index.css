@@ -88,6 +88,11 @@ html{
     @apply text-textSecondary;
 }
 
+.message-img-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjust the minmax values as needed */
+    grid-gap: 1rem;
+}
 
 .message-left{
     border: 2px solid #017e61;

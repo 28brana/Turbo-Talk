@@ -9,6 +9,19 @@ const Message = ({ text, isMe, files, createdAt }) => {
     return (
         <div className={`flex my-3 mx-3 ${isMe ? 'justify-end' : 'justify-star'}`}>
             <div className={`message ${isMe ? 'message-left' : 'message-right'}`}>
+                {files.length > 0 && (
+                    <div className='py-2 message-img-container'>
+                        {
+                            files.map((imgUrl, index) => {
+                                return (
+                                    <div key={index} className='rounded-md overflow-hidden ]'>
+                                        <img src={imgUrl} alt='pics' className='w-full h-full object-contain' />
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                )}
                 <p className='text-base'>
                     {text}
                 </p>
