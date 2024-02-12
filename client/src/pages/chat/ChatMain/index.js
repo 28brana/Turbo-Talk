@@ -10,22 +10,30 @@ const ChatMain = ({ conversationId }) => {
 
     const handleAddMessage = (value) => {
         setMessages(prevMessages => [...prevMessages, value]);
-        socket.emit('message:sent', { message: value, conversationId });
+        socket.emit('message:sent', { ...value, conversation: conversationId });
     }
     useEffect(() => {
-        const handleReceivedMessage = (value) => {
+        const handleMessageSentByOther = (value) => {
             setMessages(prevMessages => [...prevMessages, value]);
+            console.log('this chat')
+            if(conversationId === value.conversation){
+                console.log('this chat')
+                // socket.emit('message:received',value);
+            }else{
+                console.log('someoneelse chat chat')
+                // socket.emit('message:delivered',value);
+            }
         };
-        socket.on('message:receive', handleReceivedMessage);
+        socket.on('message:sent', handleMessageSentByOther);
         return () => {
-            socket.off('message:receive', handleReceivedMessage);
+            socket.off('message:sent', handleMessageSentByOther);
         };
-    }, [socket])
+    }, [conversationId, socket])
 
     useEffect(() => {
         setMessages([]);
     }, [conversationId])
-    
+
     return (
         <div className='flex flex-col h-full'>
             <div className='border'>

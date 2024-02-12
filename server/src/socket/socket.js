@@ -62,10 +62,18 @@ const initalizeSocket = async (io) => {
 
 
         socket.on('message:sent', async (data) => {
-            const { message, conversationId } = data;
-            const result = await messageQueue.add('message', data);
-            socket.broadcast.to(conversationId).emit('message:receive', message);
+            await messageQueue.add('message', data);
+            socket.broadcast.to(data.conversation).emit('message:sent', data);
         })
+
+        // socket.on('message:delivered', async (data) => {
+        //     const formatMessage = { ...data, status: 1 }
+        //     // await messageQueue.add('message', formatMessage);
+        // })
+        // socket.on('message:received', async (data) => {
+        //     const formatMessage = { ...data, status: 2 }
+        //     // await messageQueue.add('message', formatMessage);
+        // })
 
         socket.on("disconnect", async () => {
             console.log(`User Disconnected : ${socket.userId} `);

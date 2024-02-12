@@ -21,10 +21,10 @@ export const getAllConversationMessage = async (page = 1, limit = 10, conversati
 
 export const createMessage = async (data) => {
     const formatData = {
-        conversation: data.conversationId,
-        sender: data.message.sender,
-        files: data.message.files,
-        text: data.message.text
+        conversation: data.conversation,
+        sender: data.sender,
+        files: data.files,
+        text: data.text
     }
     console.log(formatData)
     const newMessage = await messageModel.create(formatData);
