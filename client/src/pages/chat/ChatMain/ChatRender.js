@@ -3,31 +3,39 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getAllConversationMessage } from '../../../service/message.service';
 import { formatTime } from '../../../utils/dateHelper';
+import ImageViewer from '../../../component/ImageViewer';
 
 const Message = ({ text, isMe, files, createdAt }) => {
-    console.log({ files });
+    const [imageList, setImageList] = useState([]);
     return (
-        <div className={`flex my-3 mx-3 ${isMe ? 'justify-end' : 'justify-star'}`}>
-            <div className={`message ${isMe ? 'message-left' : 'message-right'}`}>
-                {files.length > 0 && (
-                    <div className='py-2 message-img-container'>
-                        {
-                            files.map((imgUrl, index) => {
-                                return (
-                                    <div key={index} className='rounded-md overflow-hidden ]'>
-                                        <img src={imgUrl} alt='pics' className='w-full h-full object-contain' />
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
-                )}
-                <p className='text-base'>
-                    {text}
-                </p>
-                <span className='text-xs self-end'>{formatTime(createdAt)}</span>
+        <>
+            <ImageViewer list={imageList} onClose={() => {
+                setImageList([])
+            }} />
+            <div className={`flex my-3 mx-3 ${isMe ? 'justify-end' : 'justify-star'}`}>
+                <div className={`message ${isMe ? 'message-left' : 'message-right'}`}>
+                    {files.length > 0 && (
+                        <div className='py-2 message-img-container' onClick={() => {
+                            setImageList(files)
+                        }} >
+                            {
+                                files.map((imgUrl, index) => {
+                                    return (
+                                        <div key={index} className='rounded-md overflow-hidden ]'>
+                                            <img src={imgUrl} alt='pics' className='w-full h-full object-contain' />
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    )}
+                    <p className='text-base'>
+                        {text}
+                    </p>
+                    <span className='text-xs self-end'>{formatTime(createdAt)}</span>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 

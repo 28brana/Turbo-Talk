@@ -92,6 +92,7 @@ html{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjust the minmax values as needed */
     grid-gap: 1rem;
+    @apply cursor-pointer;
 }
 
 .message-left{
@@ -107,4 +108,10 @@ html{
 }
 .chat-input:focus{
     @apply outline-secondary bg-hover;
+}
+
+
+.slider-custom .slick-arrow::before{
+    font-size: 32px;
+    @apply text-black ;
 }
