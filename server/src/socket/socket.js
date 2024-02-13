@@ -37,12 +37,13 @@ const initalizeSocket = async (io) => {
         console.log(`Use connected : ${socket.userId}`);
         updateUserStatus(socket.userId, true);
 
-        
+
         socket.on('user:connect', async () => {
             await redisClient.sadd('user:online', socket.userId);
             const data = await redisClient.smembers('user:online');
-            console.log('User connected : ',data.length)
             io.sockets.emit('user:online', data);
+            socket.join(socket.userId);
+            console.log('User connected : ', data.length)
         });
 
         socket.on('room:join', (conversationId) => {
@@ -67,14 +68,36 @@ const initalizeSocket = async (io) => {
             socket.broadcast.to(data.conversation).emit('message:sent', data);
         })
 
+        socket.on('call:make', async (data) => {
+            const formatData = {
+                userId: socket.userId, offer: data.offer
+            }
+            socket.broadcast.to(data.userId).emit('call:incoming', formatData);
+        })
+
+        socket.on('call:accept', async (data) => {
+            const formatData = {
+                userId: socket.userId, answer: data.answer
+            }
+            socket.broadcast.to(data.userId).emit('call:accept', formatData);
+        })
+
+        socket.on('call:reject', async (data) => {
+            const formatData = {
+                userId: socket.userId,
+            }
+            socket.broadcast.to(data.userId).emit('call:reject', formatData);
+        })
 
         socket.on("disconnect", async () => {
-            console.log(`User Disconnected : ${socket.userId} `);
             await redisClient.srem('user:online', socket.userId);
             const data = await redisClient.smembers('user:online');
             io.sockets.emit('user:online', data);
-            console.log('User Disconnected : ',data.length)
+            socket.leave(socket.userId);
             updateUserStatus(socket.userId, false);
+
+            console.log('User Disconnected : ', data.length)
+            console.log(`User Disconnected : ${socket.userId} `);
         })
     });
 

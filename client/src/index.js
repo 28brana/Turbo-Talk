@@ -18,6 +18,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Chat from './pages/chat';
 import { SocketProvider } from './context/SocketContext';
+import { PeerProvider } from './context/PeerContext';
 const router = createBrowserRouter([
   {
     path: "/auth",
@@ -55,13 +56,15 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
+      <PeerProvider>
+        <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
           <ToastContainer
             position="top-right"
             theme='colored'
           />
-      </QueryClientProvider>
+        </QueryClientProvider>
+      </PeerProvider>
     </Provider>
   </React.StrictMode>
 );

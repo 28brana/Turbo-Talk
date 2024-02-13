@@ -1,8 +1,9 @@
-import { Phone, VideoCamera } from '@phosphor-icons/react';
+import { Phone} from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import UserDetail from '../SideBar/UserDetail';
 import { useSocket } from '../../../context/SocketContext';
+import VideoCall from '../../../component/VideoCall';
 const HeaderChat = () => {
 
     const conversation = useSelector(state => state.conversation);
@@ -43,9 +44,7 @@ const HeaderChat = () => {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <div className="icon-btn">
-                        <VideoCamera size={24} />
-                    </div>
+                    <VideoCall/>
                     <div className="icon-btn">
                         <Phone size={24} />
                     </div>
