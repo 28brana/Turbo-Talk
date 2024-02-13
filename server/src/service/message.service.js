@@ -30,7 +30,7 @@ export const createMessage = async (data) => {
     const newMessage = await messageModel.create(formatData);
 
     await conversationModel.findOneAndUpdate(
-        { _id: data.conversationId },
+        { _id: data.conversation },
         { $set: { latestMessage: newMessage._id } }
     )
 }
