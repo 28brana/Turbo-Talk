@@ -67,26 +67,28 @@ const initalizeSocket = async (io) => {
             await messageQueue.add('message', data);
             socket.broadcast.to(data.conversation).emit('message:sent', data);
         })
+        // Call ------------------------------------------------
 
         socket.on('call:make', async (data) => {
             const formatData = {
-                userId: socket.userId, offer: data.offer
+                from: data.from,
+                to: data.to,
+                offer: data.offer
             }
-            socket.broadcast.to(data.userId).emit('call:incoming', formatData);
+            socket.broadcast.to(data.to.userId).emit('call:incoming', formatData);
         })
 
         socket.on('call:accept', async (data) => {
             const formatData = {
-                userId: socket.userId, answer: data.answer
+                from: socket.userId,
+                to: data.from,
+                answer: data.answer
             }
-            socket.broadcast.to(data.userId).emit('call:accept', formatData);
+            socket.broadcast.to(data.from._id).emit('call:accept', formatData);
         })
 
         socket.on('call:reject', async (data) => {
-            const formatData = {
-                userId: socket.userId,
-            }
-            socket.broadcast.to(data.userId).emit('call:reject', formatData);
+            socket.broadcast.to(data.userId).emit('call:reject');
         })
 
         socket.on("disconnect", async () => {

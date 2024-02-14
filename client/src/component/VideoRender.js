@@ -1,35 +1,80 @@
 import { useSelector } from 'react-redux';
-import { Microphone, MicrophoneSlash, VideoCamera, VideoCameraSlash, PhoneDisconnect } from '@phosphor-icons/react';
+import { Microphone, MicrophoneSlash, VideoCamera, VideoCameraSlash, PhoneDisconnect, Phone, UserCircle } from '@phosphor-icons/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player'
 import { usePeer } from '../context/PeerContext';
 
-const CallAccepted = () => {
+const CallMake = ({ makeCall, handleRejectMakeCall }) => {
     return (
-        <div>
-
+        <div className="fixed top-0 left-0 w-full h-full bg-backgroundSecondary z-50">
+            <div className='bg-backgroundSecondary w-full h-full flex items-center justify-center'>
+                <div className='border bg-white flex items-center flex-col rounded-lg px-20 py-10'>
+                    <div>
+                        <div className="rounded-full cursor-pointer [width:200px] [height:200px]  flex items-center justify-center relative">
+                            <img className="object-contain" alt="profile" src={makeCall.avatar} />
+                        </div>
+                    </div>
+                    <div className='text-center mt-1'>
+                        <p className='text-2xl font-semibold'>{makeCall.name} </p>
+                        <p className='text-lg'>{makeCall.email}</p>
+                        <p className='text-base'>calling ...</p>
+                    </div>
+                    <div className='flex items-center justify-center mt-14 gap-14'>
+                        <div className='video-icon-btn bg-error' onClick={handleRejectMakeCall}>
+                            <PhoneDisconnect size={50} />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }
 
-const CallInitiated = () => {
-    // const [mystream, setmystream] = useState(null);
+const CallIncoming = ({ incomingCall, handleRejectIncomingCall, handleAcceptIncomingCall }) => {
+    return (
+        <div className="fixed top-0 left-0 w-full h-full bg-backgroundSecondary z-50">
+            <div className='bg-backgroundSecondary w-full h-full flex items-center justify-center'>
+                <div className='border bg-white flex items-center flex-col rounded-lg px-20 py-10'>
+                    <div>
+                        <div className="rounded-full cursor-pointer [width:200px] [height:200px]  flex items-center justify-center relative">
+                            <img className="object-contain" alt="profile" src={incomingCall.from.avatar} />
+                        </div>
+                    </div>
+                    <div className='text-center mt-1'>
+                        <p className='text-2xl font-semibold'>{incomingCall.from.username} </p>
+                        <p className='text-lg'>{incomingCall.from.email}</p>
+                        <p className='text-base'>calling ...</p>
+                    </div>
+                    <div className='flex items-center justify-center mt-14 gap-14'>
+                        <div className='video-icon-btn bg-green-500' onClick={handleAcceptIncomingCall}>
+                            <Phone size={50} />
+                        </div>
+                        <div className='video-icon-btn bg-error' onClick={handleRejectIncomingCall}>
+                            <PhoneDisconnect size={50} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const VideoScreen = () => {
     const [video, setVideo] = useState(false);
     const [audio, setAudio] = useState(false);
+
     const myVideo = useRef(null);
 
     const askPermission = useCallback(
         () => {
             navigator.mediaDevices
-                .getUserMedia({ video: true, audio: true })
+                .getUserMedia({ video: { width: 1000, height: 520 }, audio: true })
                 .then((stream) => {
                     setVideo(true);
                     setAudio(true);
                     myVideo.current.srcObject = stream;
                     myVideo.current.autoplay = true;
                     myVideo.current.muted = true;
-                    // sendStream(stream);
-                    // setmystream(stream);
                 }).catch((err) => {
                     console.log('Permission Denied')
                 });
@@ -41,100 +86,71 @@ const CallInitiated = () => {
     }, [askPermission]);
 
     const handleVideo = () => {
-        if (!myVideo.current.srcObject) {
-            // window.alert("To use video and audio, please allow permissions.");
+        if (!myVideo.current?.srcObject) {
+            alert('Please enable video & audio');
             askPermission();
             return;
         }
-        // setVideo((prevVideo) => {
-        //     const newVideoState = !prevVideo;
-        //     const videoTracks = myVideo.current.srcObject.getVideoTracks();
 
-        //     if (videoTracks.length > 0) {
-        //         console.log(videoTracks);
-        //         videoTracks.forEach((track) => {
-        //             track.enabled = false;
-        //             track.stop();
-        //         });
-        //     }
-
-        //     myVideo.current.pause();
-        //     myVideo.current.load();
-        //     myVideo.current.src='';
-        //     myVideo.current.srcObject = null;
-        //     myVideo.current.remove();
-
-
-        //     return newVideoState;
-        // });
-        navigator.mediaDevices
-            .getUserMedia({
-                audio: true,
-                video: true
+        if (video) {
+            myVideo.current.srcObject.getVideoTracks().forEach((track) => {
+                track.enabled = false;
             })
-            .then(function (stream) {
-                console.log('got stream with id ' + stream.id)
-                stream.getTracks().forEach(function (track) { track.stop() })
-                // WebCam will not be busy anymore
-                myVideo.current.srcObject = null;
-
+            setVideo(false);
+        } else {
+            myVideo.current.srcObject.getVideoTracks().forEach((track) => {
+                track.enabled = true;
             })
-            .catch(function (reason) {
-                console.error('capture failed ' + reason)
-            })
-
+            setVideo(true)
+        }
     };
 
     const handleAudio = () => {
-        // if (audioswitch) {
-        //     setaudio(false);
-        //     mystream.getTracks().forEach(function (track) {
-        //         if (track.readyState === "live" &&
-        //             track.kind === "audio") {
-        //             track.enabled = false;
-        //         }
-        //     });
-        // } else {
-        //     setaudio(true);
-        //     mystream.getTracks().forEach(function (track) {
-        //         if (track.readyState === "live" &&
-        //             track.kind === "audio") {
-        //             track.enabled = true;
-        //         }
-        //     });
-        // }
+        setAudio(!audio);
     };
 
 
     return (
-        <div className="bg-red-400 w-full h-full flex flex-col">
-
-            <div className='bg-green-400 w-full flex-1'>
-                <video ref={myVideo} />
-            </div>
-            <div className='border bg-white flex items-center justify-center gap-12 pb-20'>
-                <div className='video-icon-btn bg-secondary' onClick={handleAudio}>
-                    {
-                        audio ? <Microphone size={32} /> : <MicrophoneSlash size={32} />
-                    }
+        <div className="fixed top-0 left-0 w-full h-full bg-backgroundSecondary z-50">
+            <div className=" w-full h-full flex flex-col relative">
+                <div className='w-full flex-1 flex items-center justify-center'>
+                    <div className='rounded-3xl overflow-hidden  h-full'>
+                        {/* <video ref={myVideo} className='h-full w-full' /> */}
+                    </div>
                 </div>
-                <div className='video-icon-btn bg-secondary' onClick={handleVideo}>
-                    {
-                        video ? <VideoCamera size={32} /> : <VideoCameraSlash size={32} />
-                    }
+                <div className='rounded-lg [width:350px] right-4 bottom-4 overflow-hidden absolute '>
+                    <video ref={myVideo} className='h-full w-full' />
                 </div>
-                <div className='video-icon-btn bg-error'>
-                    <PhoneDisconnect size={32} />
+                <div className='flex items-center justify-center gap-12 py-5'>
+                    <div className='video-icon-btn bg-secondary' onClick={handleAudio}>
+                        {
+                            audio ? <Microphone size={24} /> : <MicrophoneSlash size={24} />
+                        }
+                    </div>
+                    <div className='video-icon-btn bg-secondary' onClick={handleVideo}>
+                        {
+                            video ? <VideoCamera size={24} /> : <VideoCameraSlash size={24} />
+                        }
+                    </div>
+                    <div className='video-icon-btn bg-error'>
+                        <PhoneDisconnect size={24} />
+                    </div>
                 </div>
             </div>
         </div>
     )
 }
 
-const VideoRender = () => {
+const VideoRender = ({ makeCall, handleRejectMakeCall, incomingCall, handleRejectIncomingCall, handleAcceptIncomingCall, callGotAccepted }) => {
+    if (callGotAccepted) {
+        return (
+            <VideoScreen />
+        )
+    }
     return (
-        <div className="fixed top-0 left-0 w-full h-full bg-backgroundSecondary z-50">
-            <CallInitiated />
+        <div >
+            {makeCall && <CallMake makeCall={makeCall} handleRejectMakeCall={handleRejectMakeCall} />}
+            {incomingCall && <CallIncoming incomingCall={incomingCall} handleRejectIncomingCall={handleRejectIncomingCall} handleAcceptIncomingCall={handleAcceptIncomingCall} />}
         </div>
     )
 }

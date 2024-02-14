@@ -7,20 +7,33 @@ import VideoRender from './VideoRender';
 
 const VideoCall = () => {
     const userDetail = useSelector(state => state.conversation.userDetail);
-    const { createOffer, createAnswer, setRemoteAnswer ,cancelCall} = usePeer();
+    const myDetail = useSelector(state => state.auth);
+    const { createOffer, createAnswer, setRemoteAnswer, cancelCall } = usePeer();
     const socket = useSocket();
+    const [makeCall, setMakeCall] = useState(null);
     const [incomingCall, setIncomingCall] = useState(null);
+    const [callGotAccepted, setCallGotAccepted] = useState(null);
+    // --------------------------------------------
     const handleMakeCall = useCallback(
         async () => {
             const offer = await createOffer();
-            socket.emit('call:make', { offer, userId: userDetail.userId });
+            socket.emit('call:make', { offer, from: myDetail.userDetail, to: userDetail });
+            setMakeCall(userDetail);
         },
-        [userDetail.userId, createOffer, socket]
+        [createOffer, socket, myDetail.userDetail, userDetail]
     )
-
+    const handleRejectMakeCall = useCallback(
+        async () => {
+            socket.emit('call:reject', { userId: userDetail.userId });
+            setMakeCall(null);
+        },
+        [socket, userDetail.userId]
+    )
+    // ------------------------------------------
     const handleIncomingCall = useCallback(
         async (data) => {
             console.log('Call is coming')
+            console.log(data)
             setIncomingCall(data)
         },
         []
@@ -28,30 +41,32 @@ const VideoCall = () => {
 
     const handleAcceptIncomingCall = useCallback(
         async () => {
-            console.log('I Accept Call',incomingCall)
-            const { userId, offer } = incomingCall;
+            console.log('I Accept Call', incomingCall)
+            const { from, to, offer } = incomingCall;
             const answer = await createAnswer(offer);
-            socket.emit('call:accept', { userId, answer })
+            socket.emit('call:accept', { from, to, answer })
+            setCallGotAccepted(true);
+
         },
         [createAnswer, incomingCall, socket]
     )
 
     const handleRejectIncomingCall = useCallback(
         async () => {
-            console.log('I Reject the Call');
-            const { userId } = incomingCall;
-            socket.emit('call:reject', { userId })
+            console.log('I Cancel The call');
+            const { _id } = incomingCall.from;
+            socket.emit('call:reject', { userId: _id })
             setIncomingCall(null)
-            await cancelCall();
+            // await cancelCall();
         },
-        [cancelCall, incomingCall, socket]
+        [incomingCall, socket]
     )
 
     const handleCallGotReject = useCallback(
-        async (data) => {
-            console.log('call got rejected');
-            console.log(data);
-            setIncomingCall(null)
+        async () => {
+            console.log('Call got Cancel')
+            setIncomingCall(null);
+            setMakeCall(null);
         },
         []
     )
@@ -59,7 +74,8 @@ const VideoCall = () => {
         async (data) => {
             console.log('Call got accepted');
             console.log(data);
-            await setRemoteAnswer(data.answer)
+            await setRemoteAnswer(data.answer);
+            setCallGotAccepted(true);
         },
         [setRemoteAnswer]
     )
@@ -79,15 +95,17 @@ const VideoCall = () => {
 
     return (
         <div className='flex '>
-            <VideoRender/>
+            <VideoRender
+                makeCall={makeCall}
+                handleRejectMakeCall={handleRejectMakeCall}
+                incomingCall={incomingCall}
+                handleRejectIncomingCall={handleRejectIncomingCall}
+                handleAcceptIncomingCall={handleAcceptIncomingCall}
+                callGotAccepted={callGotAccepted}
+                setCallGotAccepted={setCallGotAccepted}
+            />
             <div className="icon-btn" onClick={handleMakeCall}>
                 <VideoCamera size={24} />
-            </div>
-            <div className="icon-btn" onClick={handleAcceptIncomingCall}>
-                Accept Call
-            </div>
-            <div className="icon-btn" onClick={handleRejectIncomingCall}>
-                Reject Call
             </div>
         </div>
     )

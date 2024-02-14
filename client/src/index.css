@@ -120,8 +120,7 @@ html{
 /* Video Call --------- */
 .video-icon-btn{
     /* background: #017e61; */
-    width: 62px;
-    height: 62px;
+    padding: 10px;
     @apply flex items-center justify-center cursor-pointer rounded-full;
     @apply text-white;
 }
