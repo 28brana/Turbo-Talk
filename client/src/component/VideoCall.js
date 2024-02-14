@@ -3,6 +3,7 @@ import { usePeer } from '../context/PeerContext';
 import { useSocket } from '../context/SocketContext';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import VideoRender from './VideoRender';
 
 const VideoCall = () => {
     const userDetail = useSelector(state => state.conversation.userDetail);
@@ -78,6 +79,7 @@ const VideoCall = () => {
 
     return (
         <div className='flex '>
+            <VideoRender/>
             <div className="icon-btn" onClick={handleMakeCall}>
                 <VideoCamera size={24} />
             </div>

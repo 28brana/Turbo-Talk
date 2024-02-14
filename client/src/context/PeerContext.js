@@ -1,8 +1,10 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 const PeerContext = createContext();
 
 const PeerProvider = ({ children }) => {
+    const [remoteStream, setRemoteStream] = useState(null);
+
     const peer = useMemo(() => {
         const configuration = { iceServers: [{ urls: ['stun:stun.l.google.com:19302', 'stun:global.stun.twilio.com:3478'] }] };
         return new RTCPeerConnection(configuration);
@@ -27,8 +29,35 @@ const PeerProvider = ({ children }) => {
     const cancelCall = async () => {
         // await peer.close();
     }
+    const sendStream = async (stream) => {
+        const tracks = stream.getTracks();
+        for (const track of tracks) {
+            peer.addTrack(track, stream);
+        }
+    }
+
+
+    const handleTrackEvent = useCallback((event) => {
+        const streams = event.streams;
+        setRemoteStream(streams);
+    }, [])
+    const handleNegotiation = useCallback((event) => {
+        const streams = event.streams;
+        setRemoteStream(streams);
+    }, [])
+
+    useEffect(() => {
+        peer.addEventListener('track', handleTrackEvent);
+        // peer.addEventListener('negotiationneeded',handleNegotiation);
+        return () => {
+            peer.removeEventListener('track', handleTrackEvent);
+            // peer.removeEventListener
+            // ('negotiationneeded',handleNegotiation);
+        }
+    }, [handleNegotiation, handleTrackEvent, peer])
+
     return (
-        <PeerContext.Provider value={{ peer, createOffer, createAnswer, setRemoteAnswer, cancelCall }}>
+        <PeerContext.Provider value={{ peer, createOffer, createAnswer, setRemoteAnswer, cancelCall, sendStream, remoteStream }}>
             {children}
         </PeerContext.Provider>
     );
