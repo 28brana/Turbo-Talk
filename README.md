@@ -28,7 +28,7 @@ Engage in face-to-face conversations with real-time video calls using WebRTC, en
 
 ## Demo Video
 
-[Watch Turbo Talk in action!]([Link_to_Your_Demo_Video](https://drive.google.com/file/d/1p0dtl1_aXK1AfCdrk6TrkT6CjcUAHTuy/view?usp=sharing))
+[Watch Turbo Talk in action!](https://drive.google.com/file/d/1p0dtl1_aXK1AfCdrk6TrkT6CjcUAHTuy/view?usp=drive_link)
 
 ## Getting Started
 
@@ -38,4 +38,4 @@ Follow these steps to get Turbo Talk up and running on your local machine.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/turbo-talk.git
+   git clone https://github.com/28brana/turbo-talk.git
