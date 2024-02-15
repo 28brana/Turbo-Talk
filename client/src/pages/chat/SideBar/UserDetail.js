@@ -4,7 +4,7 @@ const UserDetail = ({ open, onClose ,userDetail}) => {
         return <></>
     }
     return (
-        <div className="fixed w-screen h-screen left-0 top-0 backdrop-blur-sm flex items-center justify-center">
+        <div className="fixed w-screen h-screen left-0 top-0 backdrop-blur-sm flex items-center justify-center z-30" >
             <div className='bg-white shadow-sm border p-8 rounded-md'>
                 <div className='flex cursor-pointer mb-2  justify-end'>
                     <div className='icon-btn' onClick={onClose}>

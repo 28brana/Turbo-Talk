@@ -54,7 +54,7 @@ const SideBar = () => {
     const { conversationId } = useParams();
     const socket=useSocket();
     const [showUserList, setShowUserList] = useState(false);
-    const [openUserDetail, setUserDetail] = useState(false);
+    const [openUserDetail, setOpenUserDetail] = useState(false);
     const userDetail = useSelector(state => state.auth.userDetail);
     const navigate = useNavigate();
 
@@ -85,11 +85,11 @@ const SideBar = () => {
     }
     return (
         <div className="border relative h-full">
-            <UserDetail open={openUserDetail} userDetail={userDetail} onClose={() => { setUserDetail(false) }} />
+            <UserDetail open={openUserDetail} userDetail={userDetail} onClose={() => { setOpenUserDetail(false) }} />
             <Users open={showUserList} refetch={refetch} onClose={() => { setShowUserList(false) }} />
             <div>
                 <div className="flex px-3 border-b py-2 items-center justify-between">
-                    <div className="rounded-full cursor-pointer w-10 h-10 flex items-center justify-center overflow-hidden" onClick={() => { setUserDetail(true) }}>
+                    <div className="rounded-full cursor-pointer w-10 h-10 flex items-center justify-center overflow-hidden" onClick={() => { setOpenUserDetail(true) }}>
                         <img className="object-contain" src={userDetail.avatar} alt="profile" />
                     </div>
                     <div className="flex items-center gap-4">

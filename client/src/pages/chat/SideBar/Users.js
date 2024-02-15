@@ -11,8 +11,12 @@ import {
 import { conversationService } from '../../../service';
 import { toast } from 'react-toastify';
 import { formatTime } from '../../../utils/dateHelper';
+import { useDispatch } from 'react-redux';
+import { currentConversation } from '../../../redux/slice/conversation.slice';
 
 const UserListItem = ({ _id, avatar, username, email, onClose, refetch, status, lastOnlineTime }) => {
+    const dispatch = useDispatch();
+
     const navigate = useNavigate();
     const { mutate } = useMutation({
         mutationFn: conversationService.createConversation,
@@ -22,6 +26,13 @@ const UserListItem = ({ _id, avatar, username, email, onClose, refetch, status, 
             }
             onClose();
             navigate(`/chat/${data?.data?._id}`);
+            dispatch(currentConversation({
+                _id:data?.data?._id,
+                avatar,
+                name:username,
+                email,
+                userId:_id
+            }))
         },
         onError: (data) => {
             toast.error(data.message);
@@ -31,6 +42,7 @@ const UserListItem = ({ _id, avatar, username, email, onClose, refetch, status, 
         mutate({
             participants: [_id],
         });
+       
     }
     return (
         <div onClick={handleClick} className='flex items-center gap-4 px-4 py-3 border-b hover:bg-hover cursor-pointer'>
