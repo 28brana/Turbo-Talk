@@ -45,9 +45,7 @@ const HeaderChat = () => {
                 </div>
                 <div className="flex items-center gap-3">
                     <VideoCall/>
-                    <div className="icon-btn">
-                        <Phone size={24} />
-                    </div>
+                    
                 </div>
             </div>
         </div>

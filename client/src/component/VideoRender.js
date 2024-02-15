@@ -59,8 +59,8 @@ const CallIncoming = ({ incomingCall, handleRejectIncomingCall, handleAcceptInco
     )
 }
 
-const VideoScreen = () => {
-    const { remoteVideo, sendStream } = usePeer();
+const VideoScreen = ({ handleCutCall }) => {
+    const { remoteVideo, sendStream, cancelCall } = usePeer();
     const [video, setVideo] = useState(false);
     const [audio, setAudio] = useState(false);
     const myVideo = useRef(null);
@@ -152,7 +152,10 @@ const VideoScreen = () => {
                             video ? <VideoCamera size={24} /> : <VideoCameraSlash size={24} />
                         }
                     </div>
-                    <div className='video-icon-btn bg-error'>
+                    <div className='video-icon-btn bg-error' onClick={() => {
+                        cancelCall(myVideo.current?.srcObject);
+                        handleCutCall();
+                    }}>
                         <PhoneDisconnect size={24} />
                     </div>
                 </div>
@@ -161,10 +164,10 @@ const VideoScreen = () => {
     )
 }
 
-const VideoRender = ({ makeCall, handleRejectMakeCall, incomingCall, handleRejectIncomingCall, handleAcceptIncomingCall, callGotAccepted }) => {
+const VideoRender = ({ makeCall, handleRejectMakeCall, incomingCall, handleRejectIncomingCall, handleAcceptIncomingCall, callGotAccepted, handleCutCall }) => {
     if (callGotAccepted) {
         return (
-            <VideoScreen />
+            <VideoScreen handleCutCall={handleCutCall} />
         )
     }
     return (

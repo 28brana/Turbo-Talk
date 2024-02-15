@@ -8,7 +8,7 @@ import VideoRender from './VideoRender';
 const VideoCall = () => {
     const userDetail = useSelector(state => state.conversation.userDetail);
     const myDetail = useSelector(state => state.auth);
-    const { peer, createOffer, createAnswer, setRemoteAnswer, cancelCall } = usePeer();
+    const { peer, createOffer, createAnswer, setRemoteAnswer } = usePeer();
     const socket = useSocket();
     const [makeCall, setMakeCall] = useState(null);
     const [incomingCall, setIncomingCall] = useState(null);
@@ -56,7 +56,9 @@ const VideoCall = () => {
             console.log('I Cancel The call');
             const { _id } = incomingCall.from;
             socket.emit('call:reject', { userId: _id })
-            setIncomingCall(null)
+            setIncomingCall(null);
+            setMakeCall(null);
+            setCallGotAccepted(null);
             // await cancelCall();
         },
         [incomingCall, socket]
@@ -67,6 +69,8 @@ const VideoCall = () => {
             console.log('Call got Cancel')
             setIncomingCall(null);
             setMakeCall(null);
+            setCallGotAccepted(null);
+            window.location.reload()
         },
         []
     )
@@ -80,6 +84,17 @@ const VideoCall = () => {
         [setRemoteAnswer]
     )
 
+
+    const handleCutCall = useCallback(
+        async () => {
+            console.log('I Cut The call');
+            socket.emit('call:reject', { userId: userDetail.userId })
+            setIncomingCall(null);
+            setMakeCall(null);
+            setCallGotAccepted(null);
+        },
+        [socket, userDetail.userId]
+    )
 
     useEffect(() => {
         socket.on('call:incoming', handleIncomingCall)
@@ -133,6 +148,7 @@ const VideoCall = () => {
                 handleAcceptIncomingCall={handleAcceptIncomingCall}
                 callGotAccepted={callGotAccepted}
                 setCallGotAccepted={setCallGotAccepted}
+                handleCutCall={handleCutCall}
             />
             <div className="icon-btn" onClick={handleMakeCall}>
                 <VideoCamera size={24} />

@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef} from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 const PeerContext = createContext();
 
@@ -26,8 +26,13 @@ const PeerProvider = ({ children }) => {
     const setRemoteAnswer = async (answer) => {
         await peer.setRemoteDescription(answer);
     }
-    const cancelCall = async () => {
-        // await peer.close();
+    const cancelCall = async (stream) => {
+        // const tracks = stream.getTracks();
+
+        // tracks.forEach((track) => {
+        //     track.stop();
+        // });
+        window.location.reload()
     }
     const sendStream = async (stream) => {
         const tracks = stream.getTracks();
