@@ -60,12 +60,10 @@ const CallIncoming = ({ incomingCall, handleRejectIncomingCall, handleAcceptInco
 }
 
 const VideoScreen = () => {
+    const { remoteVideo, sendStream } = usePeer();
     const [video, setVideo] = useState(false);
     const [audio, setAudio] = useState(false);
-    const { remoteStream, sendStream } = usePeer();
-
     const myVideo = useRef(null);
-    const remoteVideo = useRef(null);
 
     const askPermission = useCallback(
         () => {
@@ -83,22 +81,12 @@ const VideoScreen = () => {
                 });
         }, [sendStream]
     )
-    console.log({ remoteStream: remoteStream?.getTracks(), myStream: myVideo.current?.srcObject?.getTracks() });
-
+    // console.log({ remoteStream: remoteVideo.current?.srcObject?.getTracks(), myStream: myVideo.current?.srcObject?.getTracks() });
 
 
     // useEffect(() => {
     //     askPermission();
     // }, [askPermission]);
-
-    useEffect(() => {
-        if (!remoteVideo.current?.srcObject) {
-            remoteVideo.current.srcObject = remoteStream;
-            remoteVideo.current.autoplay = true;
-            remoteVideo.current.muted = true;
-        }
-    }, [remoteStream])
-
 
 
     const handleVideo = () => {
@@ -122,7 +110,23 @@ const VideoScreen = () => {
     };
 
     const handleAudio = () => {
-        setAudio(!audio);
+        if (!myVideo.current?.srcObject) {
+            alert('Please enable video & audio');
+            askPermission();
+            return;
+        }
+
+        if (audio) {
+            myVideo.current.srcObject.getAudioTracks().forEach((track) => {
+                track.enabled = false;
+            })
+            setAudio(false);
+        } else {
+            myVideo.current.srcObject.getAudioTracks().forEach((track) => {
+                track.enabled = true;
+            })
+            setAudio(true)
+        }
     };
 
 
@@ -131,11 +135,7 @@ const VideoScreen = () => {
             <div className=" w-full h-full flex flex-col relative">
                 <div className='w-full flex-1 flex items-center justify-center'>
                     <div className='rounded-3xl overflow-hidden  h-full'>
-                        {/* {
-                            remoteStream && <ReactPlayer url={remoteStream} playing muted />
-                        } */}
                         <video ref={remoteVideo} className='h-full w-full' />
-
                     </div>
                 </div>
                 <div className='rounded-lg [width:350px] right-4 bottom-4 overflow-hidden absolute '>
