@@ -8,7 +8,7 @@ import VideoRender from './VideoRender';
 const VideoCall = () => {
     const userDetail = useSelector(state => state.conversation.userDetail);
     const myDetail = useSelector(state => state.auth);
-    const { createOffer, createAnswer, setRemoteAnswer, cancelCall } = usePeer();
+    const { peer, createOffer, createAnswer, setRemoteAnswer, cancelCall } = usePeer();
     const socket = useSocket();
     const [makeCall, setMakeCall] = useState(null);
     const [incomingCall, setIncomingCall] = useState(null);
@@ -92,6 +92,36 @@ const VideoCall = () => {
             socket.off('call:reject', handleCallGotReject);
         }
     }, [handleCallGotAccepted, handleCallGotReject, handleIncomingCall, socket])
+
+
+    // NEGOTIATION ----------------------------------------------------
+
+    const handleNegoNeeded = useCallback(async () => {
+        console.log('Negotiation Needed');
+        const offer = await createOffer();
+        socket.emit('nego:needed', { offer, to: userDetail.userId, from: myDetail.userDetail._id })
+    }, [createOffer, myDetail.userDetail._id, socket, userDetail.userId])
+
+    const handleNegoIncoming = useCallback(async ({ offer, to, from }) => {
+        const answer = await createAnswer(offer);
+        socket.emit('nego:accept', { answer, to, from })
+    }, [createAnswer, socket])
+
+    const handleNegoAccept = useCallback(async ({ answer }) => {
+        console.log('Negotiation Accepted');
+        await setRemoteAnswer(answer);
+    }, [setRemoteAnswer])
+
+    useEffect(() => {
+        peer.addEventListener('negotiationneeded', handleNegoNeeded);
+        socket.on('nego:incoming', handleNegoIncoming);
+        socket.on('nego:accept', handleNegoAccept);
+        return () => {
+            peer.removeEventListener('negotiationneeded', handleNegoNeeded);
+            socket.off('nego:incoming', handleNegoIncoming);
+            socket.off('nego:accept', handleNegoAccept);
+        }
+    }, [handleNegoAccept, handleNegoIncoming, handleNegoNeeded, peer, socket])
 
     return (
         <div className='flex '>

@@ -62,8 +62,10 @@ const CallIncoming = ({ incomingCall, handleRejectIncomingCall, handleAcceptInco
 const VideoScreen = () => {
     const [video, setVideo] = useState(false);
     const [audio, setAudio] = useState(false);
+    const { remoteStream, sendStream } = usePeer();
 
     const myVideo = useRef(null);
+    const remoteVideo = useRef(null);
 
     const askPermission = useCallback(
         () => {
@@ -75,15 +77,29 @@ const VideoScreen = () => {
                     myVideo.current.srcObject = stream;
                     myVideo.current.autoplay = true;
                     myVideo.current.muted = true;
+                    sendStream(stream);
                 }).catch((err) => {
                     console.log('Permission Denied')
                 });
-        }, []
+        }, [sendStream]
     )
+    console.log({ remoteStream: remoteStream?.getTracks(), myStream: myVideo.current?.srcObject?.getTracks() });
+
+
+
+    // useEffect(() => {
+    //     askPermission();
+    // }, [askPermission]);
 
     useEffect(() => {
-        askPermission();
-    }, [askPermission]);
+        if (!remoteVideo.current?.srcObject) {
+            remoteVideo.current.srcObject = remoteStream;
+            remoteVideo.current.autoplay = true;
+            remoteVideo.current.muted = true;
+        }
+    }, [remoteStream])
+
+
 
     const handleVideo = () => {
         if (!myVideo.current?.srcObject) {
@@ -115,7 +131,11 @@ const VideoScreen = () => {
             <div className=" w-full h-full flex flex-col relative">
                 <div className='w-full flex-1 flex items-center justify-center'>
                     <div className='rounded-3xl overflow-hidden  h-full'>
-                        {/* <video ref={myVideo} className='h-full w-full' /> */}
+                        {/* {
+                            remoteStream && <ReactPlayer url={remoteStream} playing muted />
+                        } */}
+                        <video ref={remoteVideo} className='h-full w-full' />
+
                     </div>
                 </div>
                 <div className='rounded-lg [width:350px] right-4 bottom-4 overflow-hidden absolute '>

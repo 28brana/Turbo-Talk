@@ -36,25 +36,21 @@ const PeerProvider = ({ children }) => {
         }
     }
 
-
     const handleTrackEvent = useCallback((event) => {
         const streams = event.streams;
-        setRemoteStream(streams);
+        setRemoteStream(streams[0]);
     }, [])
-    const handleNegotiation = useCallback((event) => {
-        const streams = event.streams;
-        setRemoteStream(streams);
-    }, [])
+    // const handleTrackEvent = useCallback((event) => {
+    //     const stream = new MediaStream([event.track]);
+    //     setRemoteStream(stream);
+    // }, []);
 
     useEffect(() => {
         peer.addEventListener('track', handleTrackEvent);
-        // peer.addEventListener('negotiationneeded',handleNegotiation);
         return () => {
             peer.removeEventListener('track', handleTrackEvent);
-            // peer.removeEventListener
-            // ('negotiationneeded',handleNegotiation);
         }
-    }, [handleNegotiation, handleTrackEvent, peer])
+    }, [handleTrackEvent, peer])
 
     return (
         <PeerContext.Provider value={{ peer, createOffer, createAnswer, setRemoteAnswer, cancelCall, sendStream, remoteStream }}>

@@ -91,6 +91,14 @@ const initalizeSocket = async (io) => {
             socket.broadcast.to(data.userId).emit('call:reject');
         })
 
+        // Nego----------------------
+        socket.on('nego:needed', async (data) => {
+            socket.broadcast.to(data.to).emit('nego:incoming', data)
+        })
+        socket.on('nego:accept', async (data) => {
+            socket.broadcast.to(data.from).emit('nego:accept', data)
+        })
+
         socket.on("disconnect", async () => {
             await redisClient.srem('user:online', socket.userId);
             const data = await redisClient.smembers('user:online');
