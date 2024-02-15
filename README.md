@@ -1,4 +1,4 @@
-![Screenshot 2024-02-15 235833](https://github.com/28brana/Turbo-Talk/assets/66713164/5422d5fb-f78a-40e9-a89b-4cf3693cfc5c)# Turbo Talk
+# Turbo Talk
 
 Turbo Talk is a real-time chat application developed with React.js, Tailwind CSS, Node.js, Redux, Express, MongoDB, Redis, Socket.IO, and WebRTC.
 
