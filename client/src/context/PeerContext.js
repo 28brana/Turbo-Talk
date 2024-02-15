@@ -1,9 +1,9 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef} from 'react';
 
 const PeerContext = createContext();
 
 const PeerProvider = ({ children }) => {
-    const [remoteStream, setRemoteStream] = useState(null);
+    const remoteVideo = useRef(null);
 
     const peer = useMemo(() => {
         const configuration = { iceServers: [{ urls: ['stun:stun.l.google.com:19302', 'stun:global.stun.twilio.com:3478'] }] };
@@ -38,12 +38,10 @@ const PeerProvider = ({ children }) => {
 
     const handleTrackEvent = useCallback((event) => {
         const streams = event.streams;
-        setRemoteStream(streams[0]);
+        remoteVideo.current.srcObject = streams[0];
+        remoteVideo.current.autoplay = true;
+        // remoteVideo.current.muted = true;
     }, [])
-    // const handleTrackEvent = useCallback((event) => {
-    //     const stream = new MediaStream([event.track]);
-    //     setRemoteStream(stream);
-    // }, []);
 
     useEffect(() => {
         peer.addEventListener('track', handleTrackEvent);
@@ -53,7 +51,7 @@ const PeerProvider = ({ children }) => {
     }, [handleTrackEvent, peer])
 
     return (
-        <PeerContext.Provider value={{ peer, createOffer, createAnswer, setRemoteAnswer, cancelCall, sendStream, remoteStream }}>
+        <PeerContext.Provider value={{ peer, createOffer, createAnswer, setRemoteAnswer, cancelCall, sendStream, remoteVideo }}>
             {children}
         </PeerContext.Provider>
     );
