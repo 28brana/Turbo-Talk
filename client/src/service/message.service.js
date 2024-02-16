@@ -1,5 +1,6 @@
 import axios from "axios";
 import api from "../utils/apiInstance"
+import { IMGBB_URL } from "../utils/config";
 
 export const getAllConversationMessage = async ({ id, page }) => {
     try {
@@ -18,7 +19,7 @@ export const getAllConversationMessage = async ({ id, page }) => {
 
 export const uploadFiles = async (formData) => {
     try {
-        const response = await axios.post('https://api.imgbb.com/1/upload?key=16a4825a1826e51403d6e482f3ca6148', formData, {
+        const response = await axios.post(IMGBB_URL, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },

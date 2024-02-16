@@ -42,6 +42,9 @@ html{
 .auth-btn{
     @apply bg-secondary px-4 py-2 rounded-3xl text-white font-bold w-full;
 }
+.auth-btn:disabled{
+    @apply bg-slate-300;
+}
 
 .icon-btn{
     @apply flex items-center justify-center rounded-full p-1 cursor-pointer transition-all;

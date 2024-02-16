@@ -30,7 +30,7 @@ const Register = () => {
             [e.target.name]: e.target.value
         })
     }
-    const { mutate } = useMutation({
+    const { mutate ,isPending} = useMutation({
         mutationFn: authService.register,
         onSuccess: (data) => {
             dispatch(login(data))
@@ -73,7 +73,7 @@ const Register = () => {
                             </div>
                         </div>
 
-                        <button className="auth-btn mt-8">Register Now</button>
+                        <button className="auth-btn mt-8" disabled={isPending}> {isPending ? 'Loading...':'Register Now'}</button>
                         <hr className="my-6" />
                         <p className="text-sm text-center font-semibold text-textPrimary"> Already have an account? <Link to={'/auth/login'}><span className="text-secondary">Log in here</span></Link> </p>
                     </form>

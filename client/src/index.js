@@ -19,6 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Chat from './pages/chat';
 import { SocketProvider } from './context/SocketContext';
 import { PeerProvider } from './context/PeerContext';
+import NotFound from './pages/notFound';
 const router = createBrowserRouter([
   {
     path: "/auth",
@@ -47,6 +48,12 @@ const router = createBrowserRouter([
       <SocketProvider>
         <Chat />
       </SocketProvider>
+    )
+  },
+  {
+    path: "*",
+    element: (
+      <NotFound/>
     )
   },
 ]);

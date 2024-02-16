@@ -30,7 +30,7 @@ const Login = () => {
             [e.target.name]: e.target.value
         })
     }
-    const { mutate } = useMutation({
+    const { mutate ,isPending} = useMutation({
         mutationFn: authService.login,
         onSuccess: (data) => {
             dispatch(login(data))
@@ -69,7 +69,7 @@ const Login = () => {
                             </div>
                         </div>
 
-                        <button className="auth-btn mt-8">Login</button>
+                        <button className="auth-btn mt-8" disabled={isPending}> {isPending ? 'Loading...':'Login'}</button>
                         <hr className="my-6" />
                         <p className="text-sm text-center font-semibold text-textPrimary"> Don't have an account? <Link to={'/auth/register'}><span className="text-secondary">Sign up now</span></Link> </p>
                     </form>
