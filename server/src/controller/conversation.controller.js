@@ -17,7 +17,7 @@ export const createConversation = catchAsync(async (req, res) => {
         return res.status(400).json({ message: 'User id missing' });
     }
     const body = {
-        participants: [userId, ...req.body.participants],
+        participants: [userId, ...req.body.participants].sort(),
     }
     const result = await conversationService.createConversation(body);
     return res.status(201).json(result);
